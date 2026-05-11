@@ -30,7 +30,7 @@ export default function RoiCalcPage() {
           <RoiCalculator />
         </div>
       </main>
-      <Footer />
+      <Footer locale="en" />
     </>
   )
 }

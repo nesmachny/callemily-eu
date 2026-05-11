@@ -5,15 +5,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import LanguageSwitcher from "@/components/language-switcher"
 import { isValidLocale, DEFAULT_LOCALE, type Locale } from "@/lib/i18n"
+import { t } from "@/lib/translations"
 import type { MenuItem } from "@/lib/menu"
-
-const FALLBACK_NAV: MenuItem[] = [
-  { id: "problems", label: "Проблемы",   url: "/#problems", target: null, sort_order: 0, parent_id: null },
-  { id: "features", label: "Возможности", url: "/#features", target: null, sort_order: 1, parent_id: null },
-  { id: "how",      label: "Как работает",url: "/#how",      target: null, sort_order: 2, parent_id: null },
-  { id: "cases",    label: "Кейсы",       url: "/#cases",    target: null, sort_order: 3, parent_id: null },
-  { id: "price",    label: "Стоимость",   url: "/price",     target: null, sort_order: 4, parent_id: null },
-]
 
 function resolveHref(url: string, locale: string): string {
   // anchor-only: /#section or #section → /locale#section
@@ -38,6 +31,10 @@ export default function Header({
   const rawLocale = pathname.split("/")[1]
   const locale: Locale = isValidLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
 
+  const tr = t(locale)
+  const FALLBACK_NAV: MenuItem[] = tr.nav.items.map((item, i) => ({
+    id: item.id, label: item.label, url: item.url, target: null, sort_order: i, parent_id: null,
+  }))
   const nav = navItems?.length ? navItems : FALLBACK_NAV
 
   useEffect(() => {
@@ -80,11 +77,11 @@ export default function Header({
 
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <LanguageSwitcher currentLocale={locale} />
-          <a href={`/${locale}#cta`} className="ce-btn ce-btn-primary ce-btn-sm ce-cta-desktop">Узнать стоимость</a>
+          <a href={`/${locale}#cta`} className="ce-btn ce-btn-primary ce-btn-sm ce-cta-desktop">{tr.nav.cta}</a>
           <button
             onClick={() => setOpen(o => !o)}
             className="ce-nav-burger"
-            aria-label="Меню"
+            aria-label={tr.nav.menuLabel}
             style={{ display: "none", background: "none", border: "none", fontSize: 22, color: "var(--ce-text)", cursor: "pointer" }}
           >{open ? "✕" : "☰"}</button>
         </div>
@@ -108,7 +105,7 @@ export default function Header({
             <div style={{ paddingTop: 8, borderTop: "1px solid var(--ce-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <LanguageSwitcher currentLocale={locale} />
               <a href={`/${locale}#cta`} className="ce-btn ce-btn-primary ce-btn-sm" onClick={() => setOpen(false)}>
-                Узнать стоимость
+                {tr.nav.cta}
               </a>
             </div>
           </div>

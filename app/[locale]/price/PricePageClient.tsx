@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { usePathname } from "next/navigation"
 import Header from "@/components/header"
 import type { MenuItem } from "@/lib/menu"
 import Footer from "@/components/footer"
@@ -188,6 +189,8 @@ function LeadModal({ onClose }: { onClose: () => void }) {
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function PricePageClient({ navItems }: { navItems?: MenuItem[] }) {
+  const pathname = usePathname()
+  const locale = pathname.split("/")[1] || "en"
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [modal, setModal] = useState(false)
 
@@ -365,7 +368,7 @@ export default function PricePageClient({ navItems }: { navItems?: MenuItem[] })
         </div>
       </section>
 
-      <Footer />
+      <Footer locale={locale} />
 
       <style>{`
         @media (max-width: 900px) {

@@ -1,28 +1,20 @@
-const FEATURES = [
-  { tag: "Бронирование", title: "Принимает брони 24/7", text: "Подбирает столик по числу гостей, времени и предпочтениям. Сразу пишет в iiko или R-Keeper." },
-  { tag: "Меню", title: "Отвечает по меню", text: "Знает позиции, состав, аллергены, стоп-лист. Может посоветовать вино к стейку." },
-  { tag: "Языки", title: "Говорит на 12 языках", text: "Переключается между русским, английским и казахским в одном звонке. Не путается в акцентах." },
-  { tag: "Эскалация", title: "Передаёт сложные звонки", text: "Жалобы, корпоративы, особые запросы — переводит на менеджера с кратким брифом." },
-  { tag: "CRM", title: "Интеграции из коробки", text: "iiko, R-Keeper, Quick Resto, Bitrix24, amoCRM. Подключение за час." },
-  { tag: "Аналитика", title: "Транскрипция и метрики", text: "Записи и расшифровки всех разговоров. Видно, что спрашивают гости и где теряются заявки." },
-]
+import { t } from "@/lib/translations"
 
-export default function FeaturesSection() {
+export default function FeaturesSection({ locale }: { locale: string }) {
+  const tr = t(locale).features
   return (
     <section id="features" className="ce-section" style={{ background: "var(--ce-bg-alt)" }}>
       <div className="ce-wrap">
         <div className="ce-feat-head" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "end", marginBottom: 56 }}>
           <div>
-            <span className="ce-eyebrow">Возможности</span>
-            <h2 className="ce-h-display" style={{ fontSize: "clamp(32px, 4.4vw, 56px)", margin: 0 }}>Что умеет Эмилия</h2>
+            <span className="ce-eyebrow">{tr.eyebrow}</span>
+            <h2 className="ce-h-display" style={{ fontSize: "clamp(32px, 4.4vw, 56px)", margin: 0 }}>{tr.h2}</h2>
           </div>
-          <p style={{ fontSize: 18, color: "var(--ce-text-2)", margin: 0 }}>
-            Не просто автоответчик. Полноценный администратор с памятью, контекстом и доступом к вашим системам.
-          </p>
+          <p style={{ fontSize: 18, color: "var(--ce-text-2)", margin: 0 }}>{tr.sub}</p>
         </div>
 
         <div className="ce-feat-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
-          {FEATURES.map((f, i) => (
+          {tr.items.map((f, i) => (
             <div key={i} className="ce-card ce-card-hover" style={{
               padding: 28, display: "flex", flexDirection: "column", gap: 14, minHeight: 220,
               background: i === 0 ? "var(--ce-text)" : "var(--ce-surface)",

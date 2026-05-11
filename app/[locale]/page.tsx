@@ -9,6 +9,7 @@ import CasesSection from "@/components/cases-section"
 import ComparisonSection from "@/components/comparison-section"
 import FAQSchema from "@/components/faq-schema"
 import { getCases } from "@/lib/cases"
+import { t } from "@/lib/translations"
 import type { Metadata } from "next"
 
 const ROICalculator = dynamic(() => import("@/components/roi-calculator"))
@@ -16,15 +17,6 @@ const DemoSection = dynamic(() => import("@/components/demo-section"))
 const FAQSectionV2 = dynamic(() => import("@/components/faq-section-v2"))
 const CTASection = dynamic(() => import("@/components/cta-section"))
 const Footer = dynamic(() => import("@/components/footer"))
-
-const faqItems = [
-  { question: "Гости поймут, что говорят с роботом?", answer: "Голос Эмилии очень близок к человеческому — большинство гостей не замечают. Но мы по умолчанию настраиваем честное представление: «Здравствуйте, это голосовой помощник ресторана». Это формирует доверие и не разочаровывает." },
-  { question: "Как происходит интеграция с iiko / R-Keeper?", answer: "Подключаем через официальные API. Бронь в Эмилии = бронь в системе. Стол автоматически блокируется, при отмене — освобождается. Настройка занимает 1–2 рабочих дня." },
-  { question: "Что, если столиков нет?", answer: "Эмилия предлагает альтернативные время или дату, ставит в лист ожидания, или передаёт менеджеру. Она никогда не говорит «нет» и не кладёт трубку." },
-  { question: "А если гость хочет поговорить с человеком?", answer: "Эмилия мгновенно переводит звонок на администратора с кратким брифом по предыдущему диалогу. Никаких «начните сначала»." },
-  { question: "Сколько звонков она держит одновременно?", answer: "Технически — без ограничений. На практике — берём с запасом ×10 от вашего трафика." },
-  { question: "Можно ли попробовать бесплатно?", answer: "Да, 14 дней триала. Без банковской карты на старте. За это время сами увидите, сколько звонков теряли." },
-]
 
 export async function generateMetadata({
   params,
@@ -68,24 +60,26 @@ export default async function HomePage({
 }) {
   const { locale } = await params
   const cases = await getCases()
+  const tr = t(locale)
+  const faqItems = tr.faq.items.map(item => ({ question: item.q, answer: item.a }))
 
   return (
     <>
       <Header />
       <main>
-        <HeroSection />
-        <TrustStrip />
-        <ProblemsSection />
+        <HeroSection locale={locale} />
+        <TrustStrip locale={locale} />
+        <ProblemsSection locale={locale} />
         <ROICalculator />
-        <FeaturesSection />
-        <HowItWorksSection />
+        <FeaturesSection locale={locale} />
+        <HowItWorksSection locale={locale} />
         <DemoSection />
-        <CasesSection cases={cases} />
-        <ComparisonSection />
-        <FAQSectionV2 />
+        <CasesSection cases={cases} locale={locale} />
+        <ComparisonSection locale={locale} />
+        <FAQSectionV2 locale={locale} />
         <CTASection />
       </main>
-      <Footer />
+      <Footer locale={locale} />
       <FAQSchema items={faqItems} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />

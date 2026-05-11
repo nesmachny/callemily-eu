@@ -86,7 +86,7 @@ export default function DemoPage() {
         <RestaurantLayout />
         <RealtimeBookingDashboard />
       </main>
-      <Footer />
+      <Footer locale="en" />
     </>
   )
 }

@@ -1,86 +1,15 @@
 "use client"
 
 import { useState } from "react"
+import { t } from "@/lib/translations"
 
 type Industry = "restaurant" | "clinic" | "auto"
 
-const INDUSTRIES: { id: Industry; label: string; icon: React.ReactNode }[] = [
-  {
-    id: "restaurant",
-    label: "Рестораны",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 2v7c0 1.66 1.34 3 3 3s3-1.34 3-3V2"/>
-        <line x1="6" y1="13" x2="6" y2="22"/>
-        <line x1="15" y1="2" x2="15" y2="22"/>
-      </svg>
-    ),
-  },
-  {
-    id: "clinic",
-    label: "Клиники",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="3" width="20" height="18" rx="2"/>
-        <line x1="12" y1="8" x2="12" y2="16"/>
-        <line x1="8" y1="12" x2="16" y2="12"/>
-      </svg>
-    ),
-  },
-  {
-    id: "auto",
-    label: "Автосалоны",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M5 11l2-5h10l2 5"/>
-        <rect x="2" y="11" width="20" height="7" rx="1"/>
-        <circle cx="7" cy="18" r="2"/>
-        <circle cx="17" cy="18" r="2"/>
-      </svg>
-    ),
-  },
-]
-
-const CONTENT: Record<Industry, {
-  h1: string; emph: string; tail: string; sub: string
-  photo: string
-  confirm: { label: string; title: string; sub: string; system: string }
-  stat: string; statLabel: string
-}> = {
-  restaurant: {
-    h1: "Ваш ресторан перестанет терять",
-    emph: "звонки",
-    tail: "и гостей",
-    sub: "Эмилия принимает входящие звонки 24/7, бронирует столики, отвечает на вопросы о меню и интегрируется с iiko и R-Keeper. Без перерывов, выходных и плохого настроения.",
-    photo: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80",
-    confirm: { label: "Бронь подтверждена", title: "Андрей, 6 гостей · 20:00", sub: "Сб, 14 июня · столик у окна", system: "iiko" },
-    stat: "+27%", statLabel: "к бронированиям",
-  },
-  clinic: {
-    h1: "Ваша клиника перестанет терять",
-    emph: "пациентов",
-    tail: "из-за пропущенных звонков",
-    sub: "Эмилия принимает звонки 24/7, записывает на приём, напоминает о визите и работает с любой МИС. Без очереди, без ожидания, без человеческих ошибок.",
-    photo: "https://images.unsplash.com/photo-1631815587646-b85a1bb027e1?auto=format&fit=crop&w=900&q=80",
-    confirm: { label: "Запись создана", title: "Иванов А., 18:30", sub: "Терапевт · Каб. 4", system: "МИС Renovatio" },
-    stat: "+27%", statLabel: "записей в месяц",
-  },
-  auto: {
-    h1: "Ваш автосалон перестанет упускать",
-    emph: "горячие лиды",
-    tail: "по телефону",
-    sub: "Эмилия принимает звонки 24/7, записывает на тест-драйв и сервис, отвечает на вопросы о моделях и складе. Каждый звонок попадает в CRM.",
-    photo: "https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=900&q=80",
-    confirm: { label: "Тест-драйв записан", title: "Camry 2025 · 19:30", sub: "Менеджер: Дмитрий", system: "amoCRM" },
-    stat: "+27%", statLabel: "к продажам",
-  },
+const PHOTOS: Record<Industry, string> = {
+  restaurant: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80",
+  clinic: "https://images.unsplash.com/photo-1631815587646-b85a1bb027e1?auto=format&fit=crop&w=900&q=80",
+  auto: "https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=900&q=80",
 }
-
-const STATS = [
-  { v: "2.4М", l: "звонков обработано" },
-  { v: "<1с", l: "среднее время ответа" },
-  { v: "380+", l: "клиентов в России" },
-]
 
 const MINI_WAVEFORM_BARS = 22
 const MINI_WAVEFORM_HEIGHTS = Array.from({ length: MINI_WAVEFORM_BARS }, (_, i) =>
@@ -103,53 +32,49 @@ function MiniWaveform() {
   )
 }
 
-export default function HeroSection() {
+export default function HeroSection({ locale }: { locale: string }) {
   const [industry, setIndustry] = useState<Industry>("restaurant")
-  const c = CONTENT[industry]
+  const tr = t(locale).hero
+  const c = tr.content[industry]
 
   return (
     <section id="top" style={{ position: "relative", paddingTop: 48, paddingBottom: 100, overflow: "hidden", background: "var(--ce-bg)" }}>
-      {/* Ambient blobs */}
       <div style={{ position: "absolute", top: -200, right: -160, width: 540, height: 540, background: "radial-gradient(circle, var(--ce-primary-soft) 0%, transparent 65%)", filter: "blur(20px)", opacity: 0.7, pointerEvents: "none" }} />
       <div style={{ position: "absolute", top: 320, left: -180, width: 420, height: 420, background: "radial-gradient(circle, var(--ce-accent-soft) 0%, transparent 65%)", filter: "blur(20px)", opacity: 0.6, pointerEvents: "none" }} />
 
       <div className="ce-wrap" style={{ position: "relative" }}>
-
-        {/* ── Industry switcher ── */}
+        {/* Industry switcher */}
         <div style={{ marginBottom: 36 }}>
-          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ce-muted)", margin: "0 0 14px" }}>Я представляю</p>
+          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ce-muted)", margin: "0 0 14px" }}>{tr.industryLabel}</p>
           <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" as any, maxWidth: "100%", paddingBottom: 2 }}>
-          <div style={{ display: "inline-flex", padding: 4, background: "var(--ce-surface)", border: "1px solid var(--ce-border)", borderRadius: 999, gap: 4, minWidth: "min-content" }}>
-            {INDUSTRIES.map(ind => {
-              const active = industry === ind.id
-              return (
-                <button
-                  key={ind.id}
-                  onClick={() => setIndustry(ind.id)}
-                  className="ce-industry-btn"
-                  style={{
-                    display: "inline-flex", alignItems: "center", gap: 8,
-                    padding: "10px 20px", borderRadius: 999, border: "none",
-                    background: active ? "var(--ce-text)" : "transparent",
-                    color: active ? "#fff" : "var(--ce-text-2)",
-                    fontFamily: "var(--font-onest), sans-serif",
-                    fontSize: 14, fontWeight: 500, cursor: "pointer",
-                    transition: "all .2s ease", whiteSpace: "nowrap", flexShrink: 0,
-                  }}
-                >
-                  {ind.icon}
-                  {ind.label}
-                </button>
-              )
-            })}
-          </div>
+            <div style={{ display: "inline-flex", padding: 4, background: "var(--ce-surface)", border: "1px solid var(--ce-border)", borderRadius: 999, gap: 4, minWidth: "min-content" }}>
+              {(["restaurant", "clinic", "auto"] as Industry[]).map(id => {
+                const active = industry === id
+                return (
+                  <button
+                    key={id}
+                    onClick={() => setIndustry(id)}
+                    className="ce-industry-btn"
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 8,
+                      padding: "10px 20px", borderRadius: 999, border: "none",
+                      background: active ? "var(--ce-text)" : "transparent",
+                      color: active ? "#fff" : "var(--ce-text-2)",
+                      fontFamily: "var(--font-onest), sans-serif",
+                      fontSize: 14, fontWeight: 500, cursor: "pointer",
+                      transition: "all .2s ease", whiteSpace: "nowrap", flexShrink: 0,
+                    }}
+                  >
+                    {tr.industries[id]}
+                  </button>
+                )
+              })}
+            </div>
           </div>
         </div>
 
-        {/* ── Two-column grid ── */}
+        {/* Two-column grid */}
         <div className="ce-hero-grid" style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 56, alignItems: "center" }}>
-
-          {/* Left */}
           <div>
             <h1 className="ce-h-display" style={{ fontSize: "clamp(36px, 5.5vw, 72px)", margin: "0 0 24px", lineHeight: 1.05 }}>
               {c.h1}{" "}
@@ -162,16 +87,16 @@ export default function HeroSection() {
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <a href="#cta" className="ce-btn ce-btn-primary">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 3l1.7 4.6L18 9l-4.3 1.4L12 15l-1.7-4.6L6 9l4.3-1.4z"/><path d="M19 14l.7 1.8L21 17l-1.3.5L19 19l-.7-1.5L17 17l1.3-1.2z"/></svg>
-                Обсудить с экспертом
+                {tr.btnExpert}
               </a>
               <a href="#demo" className="ce-btn ce-btn-secondary">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                Послушать звонок
+                {tr.btnListen}
               </a>
             </div>
 
             <div style={{ display: "flex", gap: 36, marginTop: 52, flexWrap: "wrap" }}>
-              {STATS.map((s, i) => (
+              {tr.stats.map((s, i) => (
                 <div key={i}>
                   <div className="ce-stat-num" style={{ fontSize: 30 }}>{s.v}</div>
                   <div style={{ fontSize: 13, color: "var(--ce-muted)", marginTop: 4 }}>{s.l}</div>
@@ -180,16 +105,10 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right: visual */}
+          {/* Right visual */}
           <div className="ce-hero-visual" style={{ position: "relative", height: 560 }}>
-            {/* Photo */}
             <div style={{ position: "absolute", inset: 0, borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 80px -30px rgba(26,20,16,.35)" }}>
-              <img
-                key={industry}
-                src={c.photo}
-                alt=""
-                style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity .4s ease" }}
-              />
+              <img key={industry} src={PHOTOS[industry]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity .4s ease" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,.35))" }} />
             </div>
 
@@ -201,10 +120,10 @@ export default function HeroSection() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11, color: "var(--ce-good)", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>
                   <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ce-good)", flexShrink: 0 }} />
-                  Сейчас на линии
+                  {tr.liveLine}
                 </div>
-                <div style={{ fontWeight: 600, fontSize: 14.5, marginTop: 2, fontFamily: "var(--font-unbounded), sans-serif" }}>+7 (916) 412-58-30</div>
-                <div style={{ fontSize: 12, color: "var(--ce-muted)" }}>Длительность 00:34 · Москва</div>
+                <div style={{ fontWeight: 600, fontSize: 14.5, marginTop: 2, fontFamily: "var(--font-unbounded), sans-serif" }}>+351 912 345 678</div>
+                <div style={{ fontSize: 12, color: "var(--ce-muted)" }}>{tr.duration}</div>
               </div>
               <MiniWaveform />
             </div>
@@ -220,7 +139,7 @@ export default function HeroSection() {
               <div style={{ fontFamily: "var(--font-unbounded), sans-serif", fontWeight: 600, fontSize: 15 }}>{c.confirm.title}</div>
               <div style={{ fontSize: 12.5, color: "var(--ce-muted)", marginTop: 2 }}>{c.confirm.sub}</div>
               <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px dashed var(--ce-border)", display: "flex", justifyContent: "space-between", fontSize: 11, color: "var(--ce-muted)" }}>
-                <span>{c.confirm.system}</span><span>Синхронизировано</span>
+                <span>{c.confirm.system}</span><span>{tr.synced}</span>
               </div>
             </div>
 

@@ -23,7 +23,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-export default function PrivacyPage() {
+export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
   return (
     <div className="min-h-screen flex flex-col bg-white text-gray-800">
       <SiteHeader />
@@ -615,7 +616,7 @@ export default function PrivacyPage() {
           </article>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter locale={locale} />
     </div>
   )
 }
