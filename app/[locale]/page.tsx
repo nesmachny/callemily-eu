@@ -68,7 +68,7 @@ export default async function HomePage({
       <Header />
       <main>
         <HeroSection locale={locale} />
-        <TrustStrip locale={locale} />
+        {/* <TrustStrip locale={locale} /> */}
         <ProblemsSection locale={locale} />
         <ROICalculator />
         <FeaturesSection locale={locale} />
