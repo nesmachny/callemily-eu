@@ -5,6 +5,24 @@ import { t } from "@/lib/translations"
 
 type Industry = "restaurant" | "clinic" | "auto"
 
+const ICONS: Record<Industry, React.ReactNode> = {
+  restaurant: (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 2v7c0 1.66 1.34 3 3 3s3-1.34 3-3V2"/><line x1="6" y1="13" x2="6" y2="22"/><line x1="15" y1="2" x2="15" y2="22"/>
+    </svg>
+  ),
+  clinic: (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+    </svg>
+  ),
+  auto: (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 11l2-5h10l2 5"/><rect x="2" y="11" width="20" height="7" rx="1"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+    </svg>
+  ),
+}
+
 const PHOTOS: Record<Industry, string> = {
   restaurant: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80",
   clinic: "https://images.unsplash.com/photo-1631815587646-b85a1bb027e1?auto=format&fit=crop&w=900&q=80",
@@ -65,6 +83,7 @@ export default function HeroSection({ locale }: { locale: string }) {
                       transition: "all .2s ease", whiteSpace: "nowrap", flexShrink: 0,
                     }}
                   >
+                    {ICONS[id]}
                     {tr.industries[id]}
                   </button>
                 )

@@ -1,85 +1,26 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { t } from "@/lib/translations"
 
 type Industry = "restaurant" | "clinic" | "auto"
 
-const DEMOS: Record<Industry, {
-  label: string
-  icon: React.ReactNode
-  subtitle: string
-  result: string
-  phone: string
-  total: number
-  audioFile: string
-  transcript: { who: "emily" | "guest"; t: string; text: string }[]
-}> = {
-  restaurant: {
-    label: "Ресторан",
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 2v7c0 1.66 1.34 3 3 3s3-1.34 3-3V2"/><line x1="6" y1="13" x2="6" y2="22"/><line x1="15" y1="2" x2="15" y2="22"/>
-      </svg>
-    ),
-    subtitle: "Гость бронирует столик на пятницу",
-    result: "Бронь · Пятница 20:00",
-    phone: "+7 (916) ··· 30",
-    total: 29,
-    audioFile: "/audio/emily-demo-restaurant.mp3",
-    transcript: [
-      { who: "emily", t: "0:00", text: "Добрый вечер! Это голосовой помощник ресторана «Вкусный уголок». Чем могу помочь?" },
-      { who: "guest", t: "0:05", text: "Здравствуйте, хотел бы забронировать столик на двоих на пятницу вечером." },
-      { who: "emily", t: "0:10", text: "Отлично! На какое время вас записать — на семь или на восемь вечера?" },
-      { who: "guest", t: "0:15", text: "Лучше на восемь, пожалуйста." },
-      { who: "emily", t: "0:18", text: "Записала! Столик на двоих в пятницу в двадцать ноль-ноль. Скажите, пожалуйста, ваше имя?" },
-      { who: "guest", t: "0:24", text: "Алексей." },
-      { who: "emily", t: "0:25", text: "Алексей, бронь подтверждена. Ждём вас в пятницу! Если что-то изменится — перезвоните, мы всё скорректируем." },
-    ],
-  },
-  clinic: {
-    label: "Клиника",
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
-      </svg>
-    ),
-    subtitle: "Пациент записывается к терапевту",
-    result: "Запись · Среда 14:30",
-    phone: "+7 (812) ··· 11",
-    total: 37,
-    audioFile: "/audio/emily-demo-clinic.mp3",
-    transcript: [
-      { who: "emily", t: "0:00", text: "Добрый день! Клиника «Здоровье плюс», голосовой помощник. Слушаю вас." },
-      { who: "guest", t: "0:04", text: "Здравствуйте. Хочу записаться к терапевту, желательно на этой неделе." },
-      { who: "emily", t: "0:09", text: "Конечно. Есть свободное время в среду в четырнадцать тридцать и в пятницу в одиннадцать. Что вам удобнее?" },
-      { who: "guest", t: "0:16", text: "В среду, пожалуйста." },
-      { who: "emily", t: "0:18", text: "Отлично, записала. Напомните, пожалуйста, ваше имя и номер телефона для подтверждения?" },
-      { who: "guest", t: "0:24", text: "Дмитрий Соколов, телефон семь девятьсот двенадцать три сорок пять шестьдесят семь." },
-      { who: "emily", t: "0:31", text: "Дмитрий, вы записаны к терапевту в среду в четырнадцать тридцать. За час придёт СМС-напоминание. До свидания!" },
-    ],
-  },
-  auto: {
-    label: "Автосалон",
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M5 11l2-5h10l2 5"/><rect x="2" y="11" width="20" height="7" rx="1"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
-      </svg>
-    ),
-    subtitle: "Клиент записывается на тест-драйв",
-    result: "Тест-драйв · Суббота 10:00",
-    phone: "+7 (843) ··· 55",
-    total: 28,
-    audioFile: "/audio/emily-demo-auto.mp3",
-    transcript: [
-      { who: "emily", t: "0:00", text: "Добрый день! Автосалон Hyundai «Восток», голосовой помощник. Чем могу помочь?" },
-      { who: "guest", t: "0:04", text: "Привет! Хочу записаться на тест-драйв Tucson, желательно на выходных." },
-      { who: "emily", t: "0:09", text: "Отличный выбор! В субботу есть время в десять утра и в полдень. В воскресенье — в одиннадцать. Какое удобнее?" },
-      { who: "guest", t: "0:16", text: "Суббота в десять — идеально." },
-      { who: "emily", t: "0:18", text: "Записала вас на тест-драйв Hyundai Tucson в субботу в десять утра. Как вас зовут?" },
-      { who: "guest", t: "0:23", text: "Тимур." },
-      { who: "emily", t: "0:24", text: "Тимур, ждём вас в субботу! Наш адрес — улица Победы, двенадцать. Менеджер встретит вас у входа." },
-    ],
-  },
+const ICONS: Record<Industry, React.ReactNode> = {
+  restaurant: (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 2v7c0 1.66 1.34 3 3 3s3-1.34 3-3V2"/><line x1="6" y1="13" x2="6" y2="22"/><line x1="15" y1="2" x2="15" y2="22"/>
+    </svg>
+  ),
+  clinic: (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+    </svg>
+  ),
+  auto: (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 11l2-5h10l2 5"/><rect x="2" y="11" width="20" height="7" rx="1"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+    </svg>
+  ),
 }
 
 const WAVEFORM_BARS = 52
@@ -87,7 +28,7 @@ const WAVEFORM_HEIGHTS = Array.from({ length: WAVEFORM_BARS }, (_, i) =>
   `${Math.min(100, 22 + Math.abs(Math.sin(i * 0.55) + Math.cos(i * 1.7)) * 48).toFixed(4)}%`
 )
 
-const toSec = (t: string) => { const [m, s] = t.split(":").map(Number); return m * 60 + s }
+const toSec = (ts: string) => { const [m, s] = ts.split(":").map(Number); return m * 60 + s }
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`
 
 function ProgressWaveform({ progress, playing }: { progress: number; playing: boolean }) {
@@ -113,16 +54,16 @@ function ProgressWaveform({ progress, playing }: { progress: number; playing: bo
   )
 }
 
-export default function DemoSection() {
+export default function DemoSection({ locale }: { locale: string }) {
+  const tr = t(locale).demo
   const [industry, setIndustry] = useState<Industry>("restaurant")
   const [playing, setPlaying] = useState(false)
   const [time, setTime] = useState(0)
   const audioRef = useRef<HTMLAudioElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const demo = DEMOS[industry]
+  const demo = tr.industries[industry]
 
-  // Switch industry: pause, reset
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
@@ -134,7 +75,6 @@ export default function DemoSection() {
     if (containerRef.current) containerRef.current.scrollTop = 0
   }, [industry, demo.audioFile])
 
-  // Sync time from audio
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
@@ -148,7 +88,8 @@ export default function DemoSection() {
     }
   }, [demo.total])
 
-  const activeIdx = demo.transcript.reduce((acc, line, i) => (toSec(line.t) <= time ? i : acc), -1)
+  const transcript = [...demo.transcript]
+  const activeIdx = transcript.reduce((acc, line, i) => (toSec(line.t) <= time ? i : acc), -1)
 
   useEffect(() => {
     if (!containerRef.current || activeIdx < 0) return
@@ -189,14 +130,14 @@ export default function DemoSection() {
       <div className="ce-wrap" style={{ position: "relative" }}>
         {/* Header */}
         <div style={{ maxWidth: 720, marginBottom: 40 }}>
-          <span className="ce-eyebrow" style={{ color: "var(--ce-accent)" }}>Демо</span>
-          <h2 className="ce-h-display" style={{ fontSize: "clamp(32px, 4.4vw, 56px)", margin: 0, color: "#fff" }}>Послушайте, как звучит Эмилия</h2>
+          <span className="ce-eyebrow" style={{ color: "var(--ce-accent)" }}>{tr.eyebrow}</span>
+          <h2 className="ce-h-display" style={{ fontSize: "clamp(32px, 4.4vw, 56px)", margin: 0, color: "#fff" }}>{tr.h2}</h2>
         </div>
 
         {/* Industry tabs */}
         <div style={{ display: "flex", gap: 8, marginBottom: 28, flexWrap: "wrap" }}>
-          {(Object.keys(DEMOS) as Industry[]).map(id => {
-            const d = DEMOS[id]
+          {(["restaurant", "clinic", "auto"] as Industry[]).map(id => {
+            const d = tr.industries[id]
             const active = id === industry
             return (
               <button
@@ -211,7 +152,7 @@ export default function DemoSection() {
                   transition: "background .2s, color .2s",
                 }}
               >
-                {d.icon}
+                {ICONS[id]}
                 {d.label}
               </button>
             )
@@ -224,7 +165,7 @@ export default function DemoSection() {
           {/* Left: player */}
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,.5)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Реальный звонок · Запись</div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,.5)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>{tr.realCall}</div>
               <div style={{ fontSize: 13, color: "rgba(255,255,255,.6)" }}>{demo.subtitle}</div>
             </div>
             <div style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.08)", borderRadius: 18, padding: 20 }}>
@@ -240,40 +181,39 @@ export default function DemoSection() {
                 </button>
                 <span style={{ fontFamily: "monospace", fontSize: 13, color: "rgba(255,255,255,.7)" }}>{fmt(time)} / {fmt(demo.total)}</span>
               </div>
-              {/* Clickable waveform */}
               <div onClick={handleSeek} style={{ cursor: "pointer" }}>
                 <ProgressWaveform progress={time / demo.total} playing={playing} />
               </div>
               <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,.08)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, fontSize: 13 }}>
                 <div>
-                  <div style={{ color: "rgba(255,255,255,.5)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>Гость</div>
+                  <div style={{ color: "rgba(255,255,255,.5)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>{tr.guestLabel}</div>
                   <div style={{ marginTop: 2 }}>{demo.phone}</div>
                 </div>
                 <div>
-                  <div style={{ color: "rgba(255,255,255,.5)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>Результат</div>
+                  <div style={{ color: "rgba(255,255,255,.5)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>{tr.resultLabel}</div>
                   <div style={{ marginTop: 2, color: "var(--ce-accent)" }}>{demo.result}</div>
                 </div>
               </div>
             </div>
             <p style={{ fontSize: 13, color: "rgba(255,255,255,.55)", lineHeight: 1.55, margin: 0 }}>
-              Реальный звонок (имена изменены). Эмилия сама ведёт диалог — без скриптов и кнопок.
+              {tr.disclaimer}
             </p>
           </div>
 
           {/* Right: transcript */}
           <div ref={containerRef} style={{ maxHeight: 420, overflowY: "auto", padding: "4px 8px 4px 0", scrollbarWidth: "thin" }}>
-            {demo.transcript.map((line, i) => {
+            {transcript.map((line, i) => {
               const isEmily = line.who === "emily"
               const isActive = i === activeIdx
               const isPast = i < activeIdx
               return (
                 <div key={`${industry}-${i}`} data-line={i} style={{ display: "flex", flexDirection: isEmily ? "row" : "row-reverse", marginBottom: 16, opacity: isActive ? 1 : isPast ? 0.55 : 0.3, transition: "opacity .3s ease" }}>
                   <div style={{ width: 36, height: 36, borderRadius: "50%", flexShrink: 0, margin: isEmily ? "0 12px 0 0" : "0 0 0 12px", background: isEmily ? "var(--ce-primary)" : "rgba(255,255,255,.12)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600, fontSize: 13 }}>
-                    {isEmily ? "Э" : "Г"}
+                    {isEmily ? tr.emilyInitial : tr.guestInitial}
                   </div>
                   <div style={{ maxWidth: "80%" }}>
                     <div style={{ fontSize: 11, color: "rgba(255,255,255,.5)", textAlign: isEmily ? "left" : "right", marginBottom: 5 }}>
-                      {isEmily ? "Эмилия" : "Гость"} · <span style={{ fontFamily: "monospace" }}>{line.t}</span>
+                      {isEmily ? tr.emilyLabel : tr.guestLabel} · <span style={{ fontFamily: "monospace" }}>{line.t}</span>
                     </div>
                     <div style={{ padding: "11px 16px", borderRadius: 16, borderTopLeftRadius: isEmily ? 4 : 16, borderTopRightRadius: isEmily ? 16 : 4, background: isEmily ? (isActive ? "var(--ce-primary)" : "rgba(232,93,44,.15)") : (isActive ? "rgba(255,255,255,.18)" : "rgba(255,255,255,.06)"), color: "#fff", fontSize: 14.5, lineHeight: 1.5, transition: "background .3s ease" }}>
                       {line.text}

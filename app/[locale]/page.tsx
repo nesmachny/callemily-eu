@@ -59,7 +59,7 @@ export default async function HomePage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const cases = await getCases()
+  const cases = await getCases(locale)
   const tr = t(locale)
   const faqItems = tr.faq.items.map(item => ({ question: item.q, answer: item.a }))
 
@@ -73,7 +73,7 @@ export default async function HomePage({
         <ROICalculator />
         <FeaturesSection locale={locale} />
         <HowItWorksSection locale={locale} />
-        <DemoSection />
+        <DemoSection locale={locale} />
         <CasesSection cases={cases} locale={locale} />
         <ComparisonSection locale={locale} />
         <FAQSectionV2 locale={locale} />
