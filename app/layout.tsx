@@ -128,8 +128,9 @@ export default async function RootLayout({
         </Suspense>
         {/* EuroMetrics Analytics */}
         <Script
-          src="https://app.eurometrics.eu/script.js"
-          data-website-id="56985db8-a52a-4f95-b5f5-b75248508d3f"
+          defer
+          src="https://app.eurometrics.eu/em.js"
+          data-website-id="a3b47208-2dce-4234-8144-8fd92c1be705"
           strategy="afterInteractive"
         />
 </body>
