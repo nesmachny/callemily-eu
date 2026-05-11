@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import SiteHeader from "@/components/header-server"
 import SiteFooter from "@/components/footer"
+import PortableText from "@/components/portable-text"
 import { cms } from "@/lib/emdash"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
@@ -34,48 +35,7 @@ export async function generateMetadata({
   }
 }
 
-type PtSpan = { _type?: string; text?: string; marks?: string[] }
-type PtBlock = {
-  _type?: string; style?: string; listItem?: string; level?: number
-  children?: PtSpan[]
-  markDefs?: { _key: string; _type: string; href?: string }[]
-}
-
-function ptToHtml(blocks: PtBlock[]): string {
-  const html: string[] = []
-  let inList = false
-
-  for (const block of blocks) {
-    if (block._type !== "block") continue
-    const defs = block.markDefs ?? []
-
-    const inline = (block.children ?? []).map(span => {
-      let t = (span.text ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-      for (const mark of (span.marks ?? [])) {
-        const def = defs.find(d => d._key === mark)
-        if (def?._type === "link") t = `<a href="${def.href}">${t}</a>`
-        else if (mark === "strong") t = `<strong>${t}</strong>`
-        else if (mark === "em") t = `<em>${t}</em>`
-        else if (mark === "code") t = `<code>${t}</code>`
-      }
-      return t
-    }).join("")
-
-    if (block.listItem === "bullet") {
-      if (!inList) { html.push("<ul>"); inList = true }
-      html.push(`<li>${inline}</li>`)
-      continue
-    }
-    if (inList) { html.push("</ul>"); inList = false }
-
-    const tag = block.style === "h2" ? "h2" : block.style === "h3" ? "h3" : block.style === "h4" ? "h4" : "p"
-    html.push(`<${tag}>${inline}</${tag}>`)
-  }
-  if (inList) html.push("</ul>")
-  return html.join("\n")
-}
-
-async function getCmsPrivacy(locale: string): Promise<string | null> {
+async function getCmsPrivacy(locale: string): Promise<unknown[] | null> {
   if (!cms) return null
   try {
     const slug = locale === "pt" ? "privacy-pt" : "privacy-en"
@@ -83,9 +43,8 @@ async function getCmsPrivacy(locale: string): Promise<string | null> {
     const page = result.items?.find(
       (p: { slug: string | null }) => p.slug === slug
     )
-    if (!page) return null
-    const blocks = (page.data?.content ?? []) as PtBlock[]
-    return ptToHtml(blocks) || null
+    const blocks = page?.data?.content
+    return Array.isArray(blocks) && blocks.length > 0 ? blocks : null
   } catch {
     return null
   }
@@ -315,39 +274,45 @@ export default async function PrivacyPage({
   const isPt = locale === "pt"
   const content = isPt ? CONTENT.pt : CONTENT.en
 
-  const cmsText = await getCmsPrivacy(locale)
+  const cmsBlocks = await getCmsPrivacy(locale)
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-gray-800">
+    <div style={{ background: "var(--ce-bg)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <SiteHeader />
-      <main className="flex-1 py-16 md:py-24">
-        <div className="container mx-auto px-4 md:px-8 max-w-4xl">
-          <article
-            className="prose prose-lg max-w-none prose-slate
-                       prose-headings:font-semibold prose-headings:text-slate-800
-                       prose-h1:text-3xl md:prose-h1:text-4xl prose-h1:mb-2
-                       prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
-                       prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
-                       prose-p:leading-relaxed
-                       prose-ul:list-disc prose-ul:pl-6 prose-ul:space-y-1
-                       prose-strong:font-semibold
-                       prose-a:text-sky-600 hover:prose-a:text-sky-700
-                       prose-table:text-sm prose-th:bg-slate-50 prose-th:font-semibold"
-          >
-            <h1>{content.title}</h1>
-            <p className="text-sm text-gray-500 mt-0 mb-8">{content.updated}</p>
+      <main style={{ flex: 1 }}>
 
-            {cmsText ? (
-              <div className="space-y-6">
-                {cmsText.split("\n\n").map((para, i) => (
-                  <p key={i}>{para}</p>
-                ))}
-              </div>
-            ) : (
-              <div dangerouslySetInnerHTML={{ __html: content.html }} />
-            )}
-          </article>
-        </div>
+        {/* Page hero */}
+        <section className="ce-section" style={{ paddingBottom: 0 }}>
+          <div className="ce-wrap" style={{ maxWidth: 800 }}>
+            <span className="ce-eyebrow" style={{ marginBottom: 16 }}>Legal</span>
+            <h1 className="ce-h-display" style={{ fontSize: "clamp(28px, 4vw, 48px)", marginBottom: 8 }}>
+              {content.title}
+            </h1>
+            <p style={{ color: "var(--ce-muted)", fontSize: 14, marginBottom: 0 }}>{content.updated}</p>
+          </div>
+        </section>
+
+        {/* Content */}
+        <section className="ce-section">
+          <div className="ce-wrap" style={{ maxWidth: 800 }}>
+            <div style={{
+              background: "var(--ce-surface)",
+              borderRadius: 20,
+              border: "1px solid var(--ce-border)",
+              padding: "clamp(24px, 4vw, 56px)",
+            }}>
+              {cmsBlocks ? (
+                <PortableText value={cmsBlocks} />
+              ) : (
+                <div
+                  className="privacy-html"
+                  dangerouslySetInnerHTML={{ __html: content.html }}
+                />
+              )}
+            </div>
+          </div>
+        </section>
+
       </main>
       <SiteFooter locale={locale} />
     </div>

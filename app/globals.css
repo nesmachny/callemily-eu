@@ -368,3 +368,13 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 .ce-rise-in { animation: ce-rise .55s cubic-bezier(.2,.7,.2,1) both; }
+
+/* Privacy page fallback HTML content */
+.privacy-html h2 { font-family: var(--font-unbounded), sans-serif; font-weight: 700; font-size: clamp(18px, 2.2vw, 24px); color: var(--ce-text); margin: 36px 0 12px; }
+.privacy-html h3 { font-family: var(--font-unbounded), sans-serif; font-weight: 600; font-size: clamp(15px, 1.8vw, 19px); color: var(--ce-text); margin: 24px 0 8px; }
+.privacy-html p  { font-size: 16px; line-height: 1.75; color: var(--ce-text); margin: 0 0 16px; }
+.privacy-html ul { padding-left: 24px; margin: 0 0 16px; }
+.privacy-html li { font-size: 16px; line-height: 1.75; color: var(--ce-text); margin-bottom: 6px; }
+.privacy-html strong { font-weight: 600; }
+.privacy-html a  { color: var(--ce-primary); text-decoration: underline; }
+.privacy-html code { background: var(--ce-bg); padding: 2px 6px; border-radius: 4px; font-size: 0.88em; font-family: monospace; }
