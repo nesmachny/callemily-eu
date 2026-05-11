@@ -2,21 +2,21 @@ import type { Metadata } from "next"
 import SiteHeader from "@/components/header-server"
 import SiteFooter from "@/components/footer"
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.ru"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const url = `${siteUrl}/${locale}/privacy`
   return {
-    title: "Политика конфиденциальности | CallEmily",
-    description: "Политика обработки персональных данных ООО «ВайФлай» — правила сбора, хранения и защиты данных пользователей callemily.ru.",
+    title: "Privacy Policy | CallEmily",
+    description: "CallEmily privacy policy — how we collect, store and protect your personal data at callemily.eu.",
     alternates: {
       canonical: url,
-      languages: { ru: `${siteUrl}/ru/privacy`, kk: `${siteUrl}/kk/privacy`, uz: `${siteUrl}/uz/privacy`, "x-default": `${siteUrl}/ru/privacy` },
+      languages: { en: `${siteUrl}/en/privacy`, pt: `${siteUrl}/pt/privacy`, "x-default": `${siteUrl}/en/privacy` },
     },
     openGraph: {
-      title: "Политика конфиденциальности | CallEmily",
-      description: "Политика обработки персональных данных ООО «ВайФлай».",
+      title: "Privacy Policy | CallEmily",
+      description: "CallEmily privacy policy — how we collect, store and protect your personal data.",
       url,
       type: "website",
     },

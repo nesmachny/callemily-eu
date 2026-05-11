@@ -1,40 +1,39 @@
 export async function GET() {
   const content = `# CallEmily
-> Голосовой ИИ-ассистент для ресторанов, клиник и автосалонов — принимает звонки и бронирует 24/7.
+> AI voice assistant for restaurants, clinics and car dealerships — answers calls and books reservations 24/7.
 
-## О продукте
-CallEmily — голосовой AI-ассистент, который автоматически принимает входящие звонки, оформляет бронирование столиков, записывает пациентов и передаёт заявки в CRM. Средний клиент экономит от 40 минут рабочего времени администратора в день и увеличивает конверсию звонков на 20–30%.
+## About
+CallEmily is an AI voice assistant that automatically handles inbound calls, takes table reservations, books patient appointments and passes leads to your CRM. Average client saves 40+ minutes of staff time per day and increases call conversion by 20–30%.
 
-## Ключевые возможности
-- Приём звонков и бронирование столиков / записи 24/7 без участия человека
-- Интеграция с системами iiko, R-Keeper, МИС (медицинские информационные системы), amoCRM, Bitrix24
-- Передача звонка живому оператору с кратким брифом разговора
-- Параллельный приём неограниченного числа звонков
-- Настраиваемый голос и сценарий под бренд заведения
-- Аналитика звонков и отчёты об эффективности
+## Key Features
+- 24/7 call handling — reservations and bookings without human involvement
+- Integrations with iiko, R-Keeper, medical information systems (MIS), HubSpot, Salesforce, amoCRM
+- Live call transfer with a brief summary of the conversation
+- Unlimited parallel calls
+- Customisable voice and conversation script for your brand
+- Call analytics and performance reports
 
-## Отраслевые решения
-- **Рестораны и кафе**: бронирование столиков, приём предзаказов, информирование о меню и мероприятиях
-- **Клиники и медцентры**: запись на приём, подтверждение визитов, ответы на типовые вопросы
-- **Автосалоны**: запись на тест-драйв и сервис, квалификация лидов
+## Industry Solutions
+- **Restaurants & Cafés**: table reservations, pre-orders, event information
+- **Clinics & Medical Centres**: appointment booking, visit confirmation, FAQ handling
+- **Car Dealerships**: test-drive and service bookings, lead qualification
 
-## Тарифы
-- **Старт**: от 4 900 ₽/мес — до 300 звонков, 1 голосовой сценарий
-- **Бизнес**: от 9 900 ₽/мес — до 1 000 звонков, 3 сценария, интеграции с CRM
-- **Про**: от 19 900 ₽/мес — неограниченные звонки, приоритетная поддержка, кастомный голос
-- Все тарифы включают 14 дней бесплатного триала без банковской карты
+## Pricing
+- **Starter**: from €49/mo — up to 300 calls, 1 voice scenario
+- **Business**: from €99/mo — up to 1,000 calls, 3 scenarios, CRM integrations
+- **Pro**: from €199/mo — unlimited calls, priority support, custom voice
+- All plans include a 14-day free trial, no credit card required
 
-## Контакты
-- Сайт: https://callemily.ru
-- Телефон: 8 800 505-85-94 (бесплатно по России)
-- Email: welcome@wifly.ru
-- Блог: https://callemily.ru/ru/blog
+## Contact
+- Website: https://callemily.eu
+- Email: hello@callemily.eu
+- Blog: https://callemily.eu/en/blog
 
-## Технические данные
-- Работает на базе технологии WiFly (ООО «ВайФлай», на рынке с 2009 года)
-- Время подключения: 1–2 рабочих дня
+## Technical
+- Powered by WiFly technology (established 2009)
+- Onboarding time: 1–2 business days
 - SLA: 99.9% uptime
-- Обработка данных в соответствии с 152-ФЗ
+- GDPR-compliant data processing
 `
 
   return new Response(content, {

@@ -5,7 +5,7 @@ const LOCALES = ["ru", "kk", "uz"]
 
 // Webhook receiver for EmDash on-demand ISR
 // Configure in EmDash admin → Plugins → Webhook Notifier
-// Webhook URL: https://callemily.ru/api/revalidate
+// Webhook URL: https://callemily.eu/api/revalidate
 // Secret: same as REVALIDATION_SECRET in .env
 export async function POST(request: NextRequest) {
   const auth = request.headers.get("authorization")

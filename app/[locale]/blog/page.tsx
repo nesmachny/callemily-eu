@@ -3,7 +3,7 @@ import Link from "next/link"
 import { cms } from "@/lib/emdash"
 import { LOCALES } from "@/lib/i18n"
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.ru"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params

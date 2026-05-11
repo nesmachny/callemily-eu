@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 
 // Use the new, correct URL provided by the user
-const EXTERNAL_API_URL = "https://api.callemily.ru/api/tables/status"
+const EXTERNAL_API_URL = "https://api.callemily.eu/api/tables/status"
 // Reinstate the API_KEY as per user instruction
 const API_KEY = "restaurant_secret_key_2024" // For a real app, use process.env.RESTAURANT_API_KEY
 

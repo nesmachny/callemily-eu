@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 
-const LOCALES = ["ru", "kk", "uz"]
-const DEFAULT_LOCALE = "ru"
+const LOCALES = ["en", "pt"]
+const DEFAULT_LOCALE = "en"
 
 function detectLocale(acceptLanguage: string): string {
   if (!acceptLanguage) return DEFAULT_LOCALE

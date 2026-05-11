@@ -32,12 +32,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.ru"
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
   const url = `${siteUrl}/${locale}`
   return {
     alternates: {
       canonical: url,
-      languages: { ru: `${siteUrl}/ru`, kk: `${siteUrl}/kk`, uz: `${siteUrl}/uz`, "x-default": `${siteUrl}/ru` },
+      languages: { en: `${siteUrl}/en`, pt: `${siteUrl}/pt`, "x-default": `${siteUrl}/en` },
     },
     openGraph: { url },
   }
@@ -47,18 +47,18 @@ const orgSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "CallEmily",
-  url: "https://callemily.ru",
-  logo: "https://callemily.ru/favicon.svg",
-  telephone: "+78005058594",
-  contactPoint: { "@type": "ContactPoint", telephone: "+78005058594", contactType: "customer service", availableLanguage: "Russian" },
+  url: "https://callemily.eu",
+  logo: "https://callemily.eu/favicon.svg",
+  email: "hello@callemily.eu",
+  contactPoint: { "@type": "ContactPoint", contactType: "customer service", availableLanguage: ["English", "Portuguese"] },
 }
 
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "CallEmily",
-  url: "https://callemily.ru",
-  description: "Голосовой ИИ-ассистент для ресторанов, клиник и автосалонов — автоматизирует звонки и бронирования 24/7",
+  url: "https://callemily.eu",
+  description: "AI voice assistant for restaurants, clinics and car dealerships — automates calls and bookings 24/7",
 }
 
 export default async function HomePage({

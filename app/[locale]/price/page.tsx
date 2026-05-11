@@ -8,7 +8,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.ru"
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
   return {
     title: "Тарифы CallEmily — Голосовой ИИ для ресторанов",
     description: "Гибкие тарифы CallEmily для автоматизации бронирований. Экономьте с первого дня! Попробуйте бесплатно 14 дней.",

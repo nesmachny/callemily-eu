@@ -7,7 +7,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.ru"
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
   return {
     title: "Демонстрация работы CallEmily",
     description: "Позвоните на номер +7 812 309 2369 и протестируйте голосового помощника CallEmily для бронирования столиков в демо ресторане.",

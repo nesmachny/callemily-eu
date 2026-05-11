@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next"
 
-const LOCALES = ["ru", "kk", "uz"]
+const LOCALES = ["en", "pt"]
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.ru"
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
   const pages = [
     { path: "", freq: "weekly" as const, pri: 1.0 },
     { path: "/price", freq: "monthly" as const, pri: 0.9 },

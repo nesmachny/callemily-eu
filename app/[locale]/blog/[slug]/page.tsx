@@ -5,7 +5,7 @@ import { cms } from "@/lib/emdash"
 import { LOCALES } from "@/lib/i18n"
 import PortableText from "@/components/portable-text"
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.ru"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 
 interface PostData {
   title?: string

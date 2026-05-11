@@ -3,7 +3,7 @@ import Footer from "@/components/footer"
 import RoiCalculator from "@/components/roi-calculator"
 import type { Metadata } from "next"
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.ru"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 
 export const metadata: Metadata = {
   title: "Калькулятор ROI | CallEmily",

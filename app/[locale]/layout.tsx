@@ -13,14 +13,13 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.ru"
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
   return {
     alternates: {
       languages: {
-        ru: `${siteUrl}/ru`,
-        kk: `${siteUrl}/kk`,
-        uz: `${siteUrl}/uz`,
-        "x-default": `${siteUrl}/ru`,
+        en: `${siteUrl}/en`,
+        pt: `${siteUrl}/pt`,
+        "x-default": `${siteUrl}/en`,
       },
     },
   }

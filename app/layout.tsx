@@ -12,34 +12,34 @@ import { headers } from "next/headers"
 import TrackingScripts from "@/components/tracking-scripts"
 
 const unbounded = Unbounded({
-  subsets: ["latin", "cyrillic"],
+  subsets: ["latin"],
   weight: ["600", "700"],
   variable: "--font-unbounded",
   display: "swap",
 })
 
 const onest = Onest({
-  subsets: ["latin", "cyrillic"],
+  subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-onest",
   display: "swap",
 })
 
-// Базовый URL сайта
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.ru"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 
 export const metadata: Metadata = {
   title: {
-    default: "CallEmily - Голосовой помощник для ресторанов",
+    default: "CallEmily — AI Voice Assistant for Restaurants & Clinics",
     template: "%s | CallEmily",
   },
-  description: "Автоматизируйте бронирование столиков с CallEmily и увеличивайте бронирования на 20–30%",
+  description: "Automate table reservations and appointment booking with CallEmily. AI voice assistant answers calls 24/7 and integrates with your CRM.",
   keywords: [
-    "голосовой помощник",
-    "автоматизация ресторана",
-    "бронирование столиков",
-    "ИИ для ресторанов",
+    "voice AI assistant",
+    "restaurant automation",
+    "table reservation",
+    "AI for restaurants",
     "CallEmily",
+    "voice bot",
   ],
   authors: [{ name: "CallEmily Team" }],
   creator: "CallEmily",
@@ -53,21 +53,22 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
     languages: {
-      "ru-RU": "/",
+      "en": "/",
+      "pt": "/",
     },
   },
   openGraph: {
-    title: "CallEmily - Голосовой помощник для ресторанов",
-    description: "Автоматизируйте бронирование столиков с CallEmily и увеличивайте бронирования на 20–30%",
+    title: "CallEmily — AI Voice Assistant for Restaurants & Clinics",
+    description: "Automate table reservations and appointment booking with CallEmily. AI voice assistant answers calls 24/7 and integrates with your CRM.",
     url: siteUrl,
     siteName: "CallEmily",
-    locale: "ru_RU",
+    locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "CallEmily - Голосовой помощник для ресторанов",
-    description: "Автоматизируйте бронирование столиков с CallEmily и увеличивайте бронирования на 20–30%",
+    title: "CallEmily — AI Voice Assistant for Restaurants & Clinics",
+    description: "Automate table reservations and appointment booking with CallEmily. AI voice assistant answers calls 24/7.",
     creator: "@callemily",
   },
   robots: {
@@ -108,7 +109,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const headersList = await headers()
-  const locale = headersList.get("x-locale") || "ru"
+  const locale = headersList.get("x-locale") || "en"
   return (
     <html lang={locale} className={`${unbounded.variable} ${onest.variable}`} style={{ fontFamily: 'var(--font-onest), ui-sans-serif, system-ui, sans-serif' }} suppressHydrationWarning>
       <head>

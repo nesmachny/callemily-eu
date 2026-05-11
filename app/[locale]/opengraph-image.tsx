@@ -5,31 +5,26 @@ export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
 const content: Record<string, { title: string; subtitle: string; alt: string }> = {
-  ru: {
-    title: 'Голосовой помощник для ресторанов',
-    subtitle: 'Автоматизируйте бронирование столиков и увеличивайте бронирования на 20–30%',
-    alt: 'CallEmily — голосовой ИИ для ресторанов',
+  en: {
+    title: 'AI Voice Assistant for Restaurants & Clinics',
+    subtitle: 'Automate reservations and bookings. Answers calls 24/7, boosts conversions by 20–30%.',
+    alt: 'CallEmily — AI voice assistant for restaurants and clinics',
   },
-  kk: {
-    title: 'Мейрамханаларға арналған дауыстық көмекші',
-    subtitle: 'Үстел брондауды автоматтандырыңыз және брондауларды 20-30% арттырыңыз',
-    alt: 'CallEmily — мейрамханаларға арналған дауыстық ЖИ',
-  },
-  uz: {
-    title: 'Restoranlar uchun ovozli yordamchi',
-    subtitle: 'Stol bronlashni avtomatlashtiryp, bronlashlarni 20-30% oshiring',
-    alt: 'CallEmily — restoranlar uchun ovozli AI',
+  pt: {
+    title: 'Assistente de Voz IA para Restaurantes e Clínicas',
+    subtitle: 'Automatize reservas e agendamentos. Atende chamadas 24/7, aumenta conversões em 20–30%.',
+    alt: 'CallEmily — assistente de voz IA para restaurantes e clínicas',
   },
 }
 
 export async function generateAltText({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
-  return (content[locale] || content.ru).alt
+  return (content[locale] || content.en).alt
 }
 
 export default async function OGImage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
-  const t = content[locale] || content.ru
+  const t = content[locale] || content.en
 
   return new ImageResponse(
     (
@@ -62,7 +57,7 @@ export default async function OGImage({ params }: { params: Promise<{ locale: st
           {t.subtitle}
         </p>
         <div style={{ display: 'flex', gap: 32, marginTop: 48 }}>
-          {[['14 дней', 'триал бесплатно'], ['24/7', 'без перерывов'], ['2–4 мес', 'средний ROI']].map(([v, l]) => (
+          {[['14 days', 'free trial'], ['24/7', 'always on'], ['2–4 mo', 'avg ROI']].map(([v, l]) => (
             <div key={v} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <span style={{ fontSize: 28, fontWeight: 800, color: '#fff' }}>{v}</span>
               <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>{l}</span>

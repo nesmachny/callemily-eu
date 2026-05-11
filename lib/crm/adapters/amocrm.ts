@@ -142,7 +142,7 @@ export class AmoCRMAdapter implements CRMAdapter {
       const siteUrl =
         typeof process !== "undefined" && process.env?.NEXT_PUBLIC_SITE_URL
           ? process.env.NEXT_PUBLIC_SITE_URL
-          : "https://callemily.ru"
+          : "https://callemily.eu"
 
       const amoCRMData: any = {
         // Название сделки = имя контакта (чтобы в карточке было "Имя", а не "test")
