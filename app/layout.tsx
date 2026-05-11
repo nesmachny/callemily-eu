@@ -2,14 +2,10 @@ import type React from "react"
 import "./globals.css"
 import type { Metadata } from "next"
 import { Unbounded, Onest } from "next/font/google"
-import CookieConsent from "@/components/cookie-consent"
-import AnalyticsProvider from "@/components/analytics/analytics-provider"
-import "./cookie-consent.css"
 import { Suspense } from "react"
 import EnvFixScript from "@/components/env-fix-script"
 import Script from "next/script"
 import { headers } from "next/headers"
-import TrackingScripts from "@/components/tracking-scripts"
 
 const unbounded = Unbounded({
   subsets: ["latin"],
@@ -114,17 +110,11 @@ export default async function RootLayout({
     <html lang={locale} className={`${unbounded.variable} ${onest.variable}`} style={{ fontFamily: 'var(--font-onest), ui-sans-serif, system-ui, sans-serif' }} suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#E85D2C" />
-        {/* Preconnect to critical external origins */}
-        <link rel="dns-prefetch" href="https://mc.yandex.ru" />
-        <link rel="dns-prefetch" href="https://app.web-metrics.ru" />
       </head>
       <body>
         <EnvFixScript />
         <Suspense>
           {children}
-          <CookieConsent />
-          <AnalyticsProvider />
-          <TrackingScripts />
         </Suspense>
         {/* EuroMetrics Analytics */}
         <Script

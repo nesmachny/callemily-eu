@@ -4,6 +4,8 @@ import SiteFooter from "@/components/footer"
 import PortableText from "@/components/portable-text"
 import { cms } from "@/lib/emdash"
 
+export const dynamic = "force-dynamic"
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 
 export async function generateMetadata({

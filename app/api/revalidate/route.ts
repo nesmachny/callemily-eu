@@ -1,7 +1,7 @@
 import { revalidateTag, revalidatePath } from "next/cache"
 import { NextRequest, NextResponse } from "next/server"
 
-const LOCALES = ["ru", "kk", "uz"]
+const LOCALES = ["en", "pt"]
 
 // Webhook receiver for EmDash on-demand ISR
 // Configure in EmDash admin → Plugins → Webhook Notifier
@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
   for (const locale of LOCALES) {
     revalidatePath(`/${locale}`)
     revalidatePath(`/${locale}/blog`)
+    revalidatePath(`/${locale}/privacy`)
     if (metadata?.slug) revalidatePath(`/${locale}/blog/${metadata.slug}`)
   }
 
