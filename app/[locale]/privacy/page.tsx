@@ -1,618 +1,310 @@
 import type { Metadata } from "next"
 import SiteHeader from "@/components/header-server"
 import SiteFooter from "@/components/footer"
+import { cms } from "@/lib/emdash"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
   const { locale } = await params
   const url = `${siteUrl}/${locale}/privacy`
+  const isPt = locale === "pt"
   return {
-    title: "Privacy Policy | CallEmily",
-    description: "CallEmily privacy policy — how we collect, store and protect your personal data at callemily.eu.",
+    title: isPt ? "Política de Privacidade | CallEmily" : "Privacy Policy | CallEmily",
+    description: isPt
+      ? "Política de privacidade do CallEmily — como recolhemos, armazenamos e protegemos os seus dados pessoais em callemily.eu."
+      : "CallEmily privacy policy — how we collect, store and protect your personal data at callemily.eu.",
     alternates: {
       canonical: url,
-      languages: { en: `${siteUrl}/en/privacy`, pt: `${siteUrl}/pt/privacy`, "x-default": `${siteUrl}/en/privacy` },
+      languages: {
+        en: `${siteUrl}/en/privacy`,
+        pt: `${siteUrl}/pt/privacy`,
+        "x-default": `${siteUrl}/en/privacy`,
+      },
     },
     openGraph: {
-      title: "Privacy Policy | CallEmily",
-      description: "CallEmily privacy policy — how we collect, store and protect your personal data.",
+      title: isPt ? "Política de Privacidade | CallEmily" : "Privacy Policy | CallEmily",
       url,
       type: "website",
     },
   }
 }
 
-export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
+async function getCmsPrivacy(locale: string): Promise<string | null> {
+  if (!cms) return null
+  try {
+    const slug = locale === "pt" ? "privacy-pt" : "privacy-en"
+    const result = await cms.list("pages", { status: "published" })
+    const page = result.items?.find(
+      (p: { slug: string | null }) => p.slug === slug || p.slug === "privacy"
+    )
+    if (!page) return null
+    const blocks = (page.data?.content ?? []) as { _type?: string; children?: { text?: string }[] }[]
+    return blocks.map(b => b.children?.map(c => c.text).join("") ?? "").join("\n\n") || null
+  } catch {
+    return null
+  }
+}
+
+const CONTENT = {
+  en: {
+    title: "Privacy Policy",
+    updated: "Last updated: May 2026",
+    html: `
+<h2>1. Data Controller</h2>
+<p>The data controller responsible for processing your personal data is:</p>
+<p><strong>CallEmily</strong><br/>
+Email for privacy inquiries: <a href="mailto:hello@callemily.eu">hello@callemily.eu</a></p>
+
+<h2>2. Scope and Application</h2>
+<p>This Privacy Policy applies to all personal data collected through the CallEmily platform, including the website callemily.eu, our AI voice assistant service, and any related services.</p>
+<p>CallEmily is committed to protecting the privacy of its users in accordance with the <strong>General Data Protection Regulation (GDPR — EU Regulation 2016/679)</strong>.</p>
+
+<h2>3. Personal Data We Collect</h2>
+<h3>3.1. Data Provided by You</h3>
+<ul>
+  <li>Identification data: name, email address, company name (optional);</li>
+  <li>Contact data: phone number;</li>
+  <li>Communication data: messages sent through our contact form or support channels.</li>
+</ul>
+<h3>3.2. Automatically Collected Data</h3>
+<ul>
+  <li>Browsing data: IP address (anonymized), browser type, operating system, pages visited;</li>
+  <li>Usage data: features used, session duration, interactions with the platform.</li>
+</ul>
+<p>We use only strictly necessary cookies. No tracking or advertising cookies are set.</p>
+
+<h2>4. Purpose and Legal Basis for Processing</h2>
+<table>
+  <thead><tr><th>Purpose</th><th>Legal Basis (GDPR)</th></tr></thead>
+  <tbody>
+    <tr><td>Responding to enquiries and demo requests</td><td>Performance of contract / Legitimate interest (Art. 6(1)(b)(f))</td></tr>
+    <tr><td>Providing the AI voice assistant service</td><td>Performance of contract (Art. 6(1)(b))</td></tr>
+    <tr><td>Service improvement and security</td><td>Legitimate interest (Art. 6(1)(f))</td></tr>
+    <tr><td>Legal compliance</td><td>Legal obligation (Art. 6(1)(c))</td></tr>
+    <tr><td>Marketing communications</td><td>Consent (Art. 6(1)(a)) — only with explicit opt-in</td></tr>
+  </tbody>
+</table>
+
+<h2>5. Data Sharing and Third Parties</h2>
+<p>We share personal data only where strictly necessary:</p>
+<ul>
+  <li>Email service providers: for transactional emails;</li>
+  <li>Hosting providers: EU-based infrastructure only.</li>
+</ul>
+<p>We do <strong>not</strong> sell, rent, or trade your personal data. We do not use US-based processors for any personal data.</p>
+
+<h2>6. Data Storage and Retention</h2>
+<h3>6.1. Location</h3>
+<p>All data is stored exclusively in <strong>European Union data centres</strong>. No data is transferred outside the EU/EEA.</p>
+<h3>6.2. Retention Periods</h3>
+<ul>
+  <li>Contact and lead data: retained for up to 24 months after last interaction;</li>
+  <li>Billing data: retained for 10 years as required by applicable tax law;</li>
+  <li>Call recordings (where applicable): retained per customer contract, then permanently deleted.</li>
+</ul>
+
+<h2>7. Your Rights Under GDPR</h2>
+<p>You have the following rights regarding your personal data:</p>
+<ul>
+  <li><strong>Right of access</strong> — obtain confirmation and access to your data;</li>
+  <li><strong>Right to rectification</strong> — correct inaccurate or incomplete data;</li>
+  <li><strong>Right to erasure</strong> — request deletion ("right to be forgotten");</li>
+  <li><strong>Right to restriction</strong> — restrict processing under certain circumstances;</li>
+  <li><strong>Right to data portability</strong> — receive data in a structured, machine-readable format;</li>
+  <li><strong>Right to object</strong> — object to processing for direct marketing or legitimate interest purposes;</li>
+  <li><strong>Right to withdraw consent</strong> — at any time, without affecting prior processing.</li>
+</ul>
+<p>To exercise any of these rights, contact us at <a href="mailto:hello@callemily.eu">hello@callemily.eu</a>. We will respond within 30 days.</p>
+
+<h2>8. Cookie Policy</h2>
+<h3>8.1. Marketing Website (callemily.eu)</h3>
+<p>Our marketing website uses <strong>no tracking cookies</strong>. The only cookie set is a strictly necessary functional cookie that stores your language preference (<code>NEXT_LOCALE</code>). It contains no personal data and is exempt from consent requirements under Article 5(3) of the ePrivacy Directive.</p>
+<h3>8.2. Cookie Consent Banner</h3>
+<p>You may dismiss the cookie banner at any time. Your preference is stored locally and we will not set any non-essential cookies without your consent.</p>
+
+<h2>9. Security Measures</h2>
+<p>CallEmily implements appropriate technical and organizational measures to protect personal data:</p>
+<ul>
+  <li>Encryption of data in transit (TLS 1.3) and at rest;</li>
+  <li>Secure authentication and access control;</li>
+  <li>Regular backups and disaster recovery;</li>
+  <li>EU-based infrastructure with GDPR-compliant data processing agreements.</li>
+</ul>
+
+<h2>10. Data Breach Notification</h2>
+<p>In the event of a personal data breach posing a risk to data subjects, CallEmily will notify the relevant supervisory authority within 72 hours and, where required, inform affected individuals without undue delay.</p>
+
+<h2>11. Children's Data</h2>
+<p>The CallEmily platform is intended exclusively for business users aged 18 or older. We do not knowingly collect data from minors.</p>
+
+<h2>12. Changes to This Policy</h2>
+<p>This policy may be updated periodically. Significant changes will be communicated via the website or email with at least 30 days' notice.</p>
+
+<h2>13. Supervisory Authority</h2>
+<p>You have the right to lodge a complaint with the competent supervisory authority. For users in Portugal:</p>
+<p><strong>Comissão Nacional de Proteção de Dados (CNPD)</strong><br/>
+Rua de São Bento, n.º 148-3.º, 1200-821 Lisbon<br/>
+<a href="https://www.cnpd.pt" target="_blank" rel="noopener">www.cnpd.pt</a></p>
+
+<h2>14. Contact</h2>
+<p>For any questions about this policy or your personal data:<br/>
+Email: <a href="mailto:hello@callemily.eu">hello@callemily.eu</a><br/>
+Website: <a href="https://callemily.eu">callemily.eu</a></p>
+    `.trim(),
+  },
+  pt: {
+    title: "Política de Privacidade",
+    updated: "Última atualização: maio de 2026",
+    html: `
+<h2>1. Responsável pelo Tratamento</h2>
+<p>O responsável pelo tratamento dos seus dados pessoais é:</p>
+<p><strong>CallEmily</strong><br/>
+Email para questões de privacidade: <a href="mailto:hello@callemily.eu">hello@callemily.eu</a></p>
+
+<h2>2. Âmbito e Aplicação</h2>
+<p>Esta Política de Privacidade aplica-se a todos os dados pessoais recolhidos através da plataforma CallEmily, incluindo o sítio callemily.eu, o nosso serviço de assistente de voz com IA e quaisquer serviços relacionados.</p>
+<p>A CallEmily está comprometida com a proteção da privacidade dos seus utilizadores em conformidade com o <strong>Regulamento Geral sobre a Proteção de Dados (RGPD — Regulamento UE 2016/679)</strong>.</p>
+
+<h2>3. Dados Pessoais que Recolhemos</h2>
+<h3>3.1. Dados Fornecidos por Si</h3>
+<ul>
+  <li>Dados de identificação: nome, endereço de email, nome da empresa (opcional);</li>
+  <li>Dados de contacto: número de telefone;</li>
+  <li>Dados de comunicação: mensagens enviadas através do nosso formulário de contacto ou canais de apoio.</li>
+</ul>
+<h3>3.2. Dados Recolhidos Automaticamente</h3>
+<ul>
+  <li>Dados de navegação: endereço IP (anonimizado), tipo de browser, sistema operativo, páginas visitadas;</li>
+  <li>Dados de utilização: funcionalidades utilizadas, duração da sessão, interações com a plataforma.</li>
+</ul>
+<p>Utilizamos apenas cookies estritamente necessários. Não são utilizados cookies de rastreio ou publicidade.</p>
+
+<h2>4. Finalidade e Base Jurídica do Tratamento</h2>
+<table>
+  <thead><tr><th>Finalidade</th><th>Base Jurídica (RGPD)</th></tr></thead>
+  <tbody>
+    <tr><td>Resposta a pedidos de informação e demonstrações</td><td>Execução de contrato / Interesse legítimo (Art. 6.º, n.º 1, als. b) e f))</td></tr>
+    <tr><td>Prestação do serviço de assistente de voz com IA</td><td>Execução de contrato (Art. 6.º, n.º 1, al. b))</td></tr>
+    <tr><td>Melhoria do serviço e segurança</td><td>Interesse legítimo (Art. 6.º, n.º 1, al. f))</td></tr>
+    <tr><td>Cumprimento de obrigações legais</td><td>Obrigação jurídica (Art. 6.º, n.º 1, al. c))</td></tr>
+    <tr><td>Comunicações de marketing</td><td>Consentimento (Art. 6.º, n.º 1, al. a)) — apenas com opt-in explícito</td></tr>
+  </tbody>
+</table>
+
+<h2>5. Partilha de Dados e Terceiros</h2>
+<p>Partilhamos dados pessoais apenas quando estritamente necessário:</p>
+<ul>
+  <li>Fornecedores de serviços de email: para emails transacionais;</li>
+  <li>Fornecedores de alojamento: exclusivamente infraestrutura baseada na UE.</li>
+</ul>
+<p><strong>Não</strong> vendemos, alugamos nem cedemos os seus dados pessoais. Não utilizamos processadores sediados fora da UE para quaisquer dados pessoais.</p>
+
+<h2>6. Armazenamento e Conservação de Dados</h2>
+<h3>6.1. Localização</h3>
+<p>Todos os dados são armazenados exclusivamente em <strong>centros de dados na União Europeia</strong>. Nenhum dado é transferido para fora da UE/EEE.</p>
+<h3>6.2. Prazos de Conservação</h3>
+<ul>
+  <li>Dados de contacto e leads: conservados até 24 meses após a última interação;</li>
+  <li>Dados de faturação: conservados durante 10 anos conforme exigido pela legislação fiscal aplicável;</li>
+  <li>Gravações de chamadas (quando aplicável): conservadas conforme contrato com o cliente, depois eliminadas permanentemente.</li>
+</ul>
+
+<h2>7. Os Seus Direitos ao Abrigo do RGPD</h2>
+<p>Tem os seguintes direitos relativamente aos seus dados pessoais:</p>
+<ul>
+  <li><strong>Direito de acesso</strong> — obter confirmação e acesso aos seus dados;</li>
+  <li><strong>Direito de retificação</strong> — corrigir dados inexatos ou incompletos;</li>
+  <li><strong>Direito ao apagamento</strong> — solicitar a eliminação dos dados ("direito a ser esquecido");</li>
+  <li><strong>Direito à limitação do tratamento</strong> — limitar o tratamento em determinadas circunstâncias;</li>
+  <li><strong>Direito à portabilidade dos dados</strong> — receber os dados num formato estruturado e legível por máquina;</li>
+  <li><strong>Direito de oposição</strong> — opor-se ao tratamento para fins de marketing direto ou interesse legítimo;</li>
+  <li><strong>Direito de retirar o consentimento</strong> — a qualquer momento, sem afetar o tratamento anterior.</li>
+</ul>
+<p>Para exercer qualquer destes direitos, contacte-nos em <a href="mailto:hello@callemily.eu">hello@callemily.eu</a>. Responderemos no prazo de 30 dias.</p>
+
+<h2>8. Política de Cookies</h2>
+<h3>8.1. Sítio de Marketing (callemily.eu)</h3>
+<p>O nosso sítio de marketing <strong>não utiliza cookies de rastreio</strong>. O único cookie definido é um cookie funcional estritamente necessário que armazena a sua preferência de idioma (<code>NEXT_LOCALE</code>). Não contém dados pessoais e está isento de requisitos de consentimento ao abrigo do Artigo 5.º, n.º 3 da Diretiva ePrivacy.</p>
+<h3>8.2. Banner de Consentimento de Cookies</h3>
+<p>Pode dispensar o banner de cookies a qualquer momento. A sua preferência é armazenada localmente e não definiremos cookies não essenciais sem o seu consentimento.</p>
+
+<h2>9. Medidas de Segurança</h2>
+<p>A CallEmily implementa medidas técnicas e organizacionais adequadas para proteger os dados pessoais:</p>
+<ul>
+  <li>Encriptação dos dados em trânsito (TLS 1.3) e em repouso;</li>
+  <li>Autenticação segura e controlo de acessos;</li>
+  <li>Cópias de segurança regulares e plano de recuperação;</li>
+  <li>Infraestrutura baseada na UE com acordos de tratamento de dados conformes com o RGPD.</li>
+</ul>
+
+<h2>10. Notificação de Violações de Dados</h2>
+<p>Em caso de violação de dados pessoais que represente um risco para os titulares, a CallEmily notificará a autoridade de supervisão competente no prazo de 72 horas e, quando necessário, informará os indivíduos afetados sem demora injustificada.</p>
+
+<h2>11. Dados de Menores</h2>
+<p>A plataforma CallEmily destina-se exclusivamente a utilizadores empresariais com 18 anos ou mais. Não recolhemos intencionalmente dados de menores.</p>
+
+<h2>12. Alterações a Esta Política</h2>
+<p>Esta política pode ser atualizada periodicamente. Alterações significativas serão comunicadas através do sítio ou por email com pelo menos 30 dias de antecedência.</p>
+
+<h2>13. Autoridade de Supervisão</h2>
+<p>Tem o direito de apresentar uma reclamação junto da autoridade de supervisão competente:</p>
+<p><strong>Comissão Nacional de Proteção de Dados (CNPD)</strong><br/>
+Rua de São Bento, n.º 148-3.º, 1200-821 Lisboa<br/>
+<a href="https://www.cnpd.pt" target="_blank" rel="noopener">www.cnpd.pt</a></p>
+
+<h2>14. Contacto</h2>
+<p>Para qualquer questão sobre esta política ou os seus dados pessoais:<br/>
+Email: <a href="mailto:hello@callemily.eu">hello@callemily.eu</a><br/>
+Sítio: <a href="https://callemily.eu">callemily.eu</a></p>
+    `.trim(),
+  },
+}
+
+export default async function PrivacyPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
   const { locale } = await params
+  const isPt = locale === "pt"
+  const content = isPt ? CONTENT.pt : CONTENT.en
+
+  const cmsText = await getCmsPrivacy(locale)
+
   return (
     <div className="min-h-screen flex flex-col bg-white text-gray-800">
       <SiteHeader />
       <main className="flex-1 py-16 md:py-24">
-        {" "}
-        {/* Adjusted padding, pt-32 seemed large if header is fixed */}
         <div className="container mx-auto px-4 md:px-8 max-w-4xl">
           <article
-            className="prose prose-lg max-w-none prose-slate 
-                              prose-headings:font-semibold prose-headings:text-slate-800
-                              prose-h1:text-3xl md:prose-h1:text-4xl prose-h1:mb-8
-                              prose-h2:text-2xl md:prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-4
-                              prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-3
-                              prose-p:leading-relaxed 
-                              prose-ul:list-disc prose-ul:pl-6 prose-ul:space-y-1
-                              prose-strong:font-semibold
-                              prose-a:text-sky-600 hover:prose-a:text-sky-700"
+            className="prose prose-lg max-w-none prose-slate
+                       prose-headings:font-semibold prose-headings:text-slate-800
+                       prose-h1:text-3xl md:prose-h1:text-4xl prose-h1:mb-2
+                       prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
+                       prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
+                       prose-p:leading-relaxed
+                       prose-ul:list-disc prose-ul:pl-6 prose-ul:space-y-1
+                       prose-strong:font-semibold
+                       prose-a:text-sky-600 hover:prose-a:text-sky-700
+                       prose-table:text-sm prose-th:bg-slate-50 prose-th:font-semibold"
           >
-            <h1>Политика в отношении обработки персональных данных</h1>
+            <h1>{content.title}</h1>
+            <p className="text-sm text-gray-500 mt-0 mb-8">{content.updated}</p>
 
-            <div className="space-y-8">
-              <section>
-                <h2>1. Общие положения</h2>
-                <p className="mb-4">
-                  Настоящая политика обработки персональных данных составлена в соответствии с требованиями Федерального
-                  закона от 27.07.2006 № 152-ФЗ «О персональных данных» (далее — Закон о персональных данных) и
-                  определяет порядок обработки персональных данных и меры по обеспечению безопасности персональных
-                  данных, предпринимаемые ООО "ВайФлай" (далее — Оператор).
-                </p>
-                <p className="mb-4">
-                  1.1. Оператор ставит своей важнейшей целью и условием осуществления своей деятельности соблюдение прав
-                  и свобод человека и гражданина при обработке его персональных данных, в том числе защиты прав на
-                  неприкосновенность частной жизни, личную и семейную тайну.
-                </p>
-                <p>
-                  1.2. Настоящая политика Оператора в отношении обработки персональных данных (далее — Политика)
-                  применяется ко всей информации, которую Оператор может получить о посетителях веб-сайтов
-                  https://clientpulse.ru и https://wifly.ru.
-                </p>
-              </section>
-
-              <section>
-                <h2>2. Основные понятия, используемые в Политике</h2>
-                <div className="space-y-3">
-                  <p>
-                    <strong>2.1.</strong> Автоматизированная обработка персональных данных — обработка персональных
-                    данных с помощью средств вычислительной техники.
-                  </p>
-                  <p>
-                    <strong>2.2.</strong> Блокирование персональных данных — временное прекращение обработки
-                    персональных данных (за исключением случаев, если обработка необходима для уточнения персональных
-                    данных).
-                  </p>
-                  <p>
-                    <strong>2.3.</strong> Веб-сайт — совокупность графических и информационных материалов, а также
-                    программ для ЭВМ и баз данных, обеспечивающих их доступность в сети интернет по сетевым адресам
-                    https://clientpulse.ru и https://wifly.ru.
-                  </p>
-                  <p>
-                    <strong>2.4.</strong> Информационная система персональных данных — совокупность содержащихся в базах
-                    данных персональных данных и обеспечивающих их обработку информационных технологий и технических
-                    средств.
-                  </p>
-                  <p>
-                    <strong>2.5.</strong> Обезличивание персональных данных — действия, в результате которых невозможно
-                    определить без использования дополнительной информации принадлежность персональных данных
-                    конкретному Пользователю или иному субъекту персональных данных.
-                  </p>
-                  <p>
-                    <strong>2.6.</strong> Обработка персональных данных — любое действие (операция) или совокупность
-                    действий (операций), совершаемых с использованием средств автоматизации или без использования таких
-                    средств с персональными данными, включая сбор, запись, систематизацию, накопление, хранение,
-                    уточнение (обновление, изменение), извлечение, использование, передачу (распространение,
-                    предоставление, доступ), обезличивание, блокирование, удаление, уничтожение персональных данных.
-                  </p>
-                  <p>
-                    <strong>2.7.</strong> Оператор — государственный орган, муниципальный орган, юридическое или
-                    физическое лицо, самостоятельно или совместно с другими лицами организующие и/или осуществляющие
-                    обработку персональных данных, а также определяющие цели обработки персональных данных, состав
-                    персональных данных, подлежащих обработке, действия (операции), совершаемые с персональными данными.
-                  </p>
-                  <p>
-                    <strong>2.8.</strong> Персональные данные — любая информация, относящаяся прямо или косвенно к
-                    определенному или определяемому Пользователю веб-сайтов https://clientpulse.ru и https://wifly.ru.
-                  </p>
-                  <p>
-                    <strong>2.9.</strong> Персональные данные, разрешенные субъектом персональных данных для
-                    распространения, — персональные данные, доступ неограниченного круга лиц к которым предоставлен
-                    субъектом персональных данных путем дачи согласия на обработку персональных данных, разрешенных
-                    субъектом персональных данных для распространения в порядке, предусмотренном Законом о персональных
-                    данных (далее — персональные данные, разрешенные для распространения).
-                  </p>
-                  <p>
-                    <strong>2.10.</strong> Пользователь — любой посетитель веб-сайтов https://clientpulse.ru и
-                    https://wifly.ru.
-                  </p>
-                  <p>
-                    <strong>2.11.</strong> Предоставление персональных данных — действия, направленные на раскрытие
-                    персональных данных определенному лицу или определенному кругу лиц.
-                  </p>
-                  <p>
-                    <strong>2.12.</strong> Распространение персональных данных — любые действия, направленные на
-                    раскрытие персональных данных неопределенному кругу лиц (передача персональных данных) или на
-                    ознакомление с персональными данными неограниченного круга лиц, в том числе обнародование
-                    персональных данных в средствах массовой информации, размещение в информационно-телекоммуникационных
-                    сетях или предоставление доступа к персональным данным каким-либо иным способом.
-                  </p>
-                  <p>
-                    <strong>2.13.</strong> Трансграничная передача персональных данных — передача персональных данных на
-                    территорию иностранного государства органу власти иностранного государства, иностранному физическому
-                    или иностранному юридическому лицу.
-                  </p>
-                  <p>
-                    <strong>2.14.</strong> Уничтожение персональных данных — любые действия, в результате которых
-                    персональные данные уничтожаются безвозвратно с невозможностью дальнейшего восстановления содержания
-                    персональных данных в информационной системе персональных данных и/или уничтожаются материальные
-                    носители персональных данных.
-                  </p>
-                </div>
-              </section>
-
-              <section>
-                <h2>3. Основные права и обязанности Оператора</h2>
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-2">3.1. Оператор имеет право:</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>
-                      получать от субъекта персональных данных достоверные информацию и/или документы, содержащие
-                      персональные данные;
-                    </li>
-                    <li>
-                      в случае отзыва субъектом персональных данных согласия на обработку персональных данных, а также
-                      направления обращения с требованием о прекращении обработки персональных данных, Оператор вправе
-                      продолжить обработку персональных данных без согласия субъекта персональных данных при наличии
-                      оснований, указанных в Законе о персональных данных;
-                    </li>
-                    <li>
-                      самостоятельно определять состав и перечень мер, необходимых и достаточных для обеспечения
-                      выполнения обязанностей, предусмотренных Законом о персональных данных и принятыми в соответствии
-                      с ним нормативными правовыми актами, если иное не предусмотрено Законом о персональных данных или
-                      другими федеральными законами.
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">3.2. Оператор обязан:</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>
-                      предоставлять субъекту персональных данных по его просьбе информацию, касающуюся обработки его
-                      персональных данных;
-                    </li>
-                    <li>
-                      организовывать обработку персональных данных в порядке, установленном действующим
-                      законодательством РФ;
-                    </li>
-                    <li>
-                      отвечать на обращения и запросы субъектов персональных данных и их законных представителей в
-                      соответствии с требованиями Закона о персональных данных;
-                    </li>
-                    <li>
-                      сообщать в уполномоченный орган по защите прав субъектов персональных данных по запросу этого
-                      органа необходимую информацию в течение 10 дней с даты получения такого запроса;
-                    </li>
-                    <li>
-                      публиковать или иным образом обеспечивать неограниченный доступ к настоящей Политике в отношении
-                      обработки персональных данных;
-                    </li>
-                    <li>
-                      принимать правовые, организационные и технические меры для защиты персональных данных от
-                      неправомерного или случайного доступа к ним, уничтожения, изменения, блокирования, копирования,
-                      предоставления, распространения персональных данных, а также от иных неправомерных действий в
-                      отношении персональных данных;
-                    </li>
-                    <li>
-                      прекратить передачу (распространение, предоставление, доступ) персональных данных, прекратить
-                      обработку и уничтожить персональные данные в порядке и случаях, предусмотренных Законом о
-                      персональных данных;
-                    </li>
-                    <li>исполнять иные обязанности, предусмотренные Законом о персональных данных.</li>
-                  </ul>
-                </div>
-              </section>
-
-              <section>
-                <h2>4. Основные права и обязанности субъектов персональных данных</h2>
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-2">4.1. Субъекты персональных данных имеют право:</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>
-                      получать информацию, касающуюся обработки его персональных данных, за исключением случаев,
-                      предусмотренных федеральными законами. Сведения предоставляются субъекту персональных данных
-                      Оператором в доступной форме, и в них не должны содержаться персональные данные, относящиеся к
-                      другим субъектам персональных данных, за исключением случаев, когда имеются законные основания для
-                      раскрытия таких персональных данных. Перечень информации и порядок ее получения установлен Законом
-                      о персональных данных;
-                    </li>
-                    <li>
-                      требовать от оператора уточнения его персональных данных, их блокирования или уничтожения в
-                      случае, если персональные данные являются неполными, устаревшими, неточными, незаконно полученными
-                      или не являются необходимыми для заявленной цели обработки, а также принимать предусмотренные
-                      законом меры по защите своих прав;
-                    </li>
-                    <li>
-                      выдвигать условие предварительного согласия при обработке персональных данных в целях продвижения
-                      на рынке товаров, работ и услуг;
-                    </li>
-                    <li>
-                      на отзыв согласия на обработку персональных данных, а также на направление требования о
-                      прекращении обработки персональных данных;
-                    </li>
-                    <li>
-                      обжаловать в уполномоченный орган по защите прав субъектов персональных данных или в судебном
-                      порядке неправомерные действия или бездействие Оператора при обработке его персональных данных;
-                    </li>
-                    <li>на осуществление иных прав, предусмотренных законодательством РФ.</li>
-                  </ul>
-                </div>
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-2">4.2. Субъекты персональных данных обязаны:</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>предоставлять Оператору достоверные данные о себе;</li>
-                    <li>сообщать Оператору об уточнении (обновлении, изменении) своих персональных данных.</li>
-                  </ul>
-                </div>
-                <p>
-                  <strong>4.3.</strong> Лица, передавшие Оператору недостоверные сведения о себе, либо сведения о другом
-                  субъекте персональных данных без согласия последнего, несут ответственность в соответствии с
-                  законодательством РФ.
-                </p>
-              </section>
-
-              <section>
-                <h2>5. Принципы обработки персональных данных</h2>
-                <div className="space-y-3">
-                  <p>
-                    <strong>5.1.</strong> Обработка персональных данных осуществляется на законной и справедливой
-                    основе.
-                  </p>
-                  <p>
-                    <strong>5.2.</strong> Обработка персональных данных ограничивается достижением конкретных, заранее
-                    определенных и законных целей. Не допускается обработка персональных данных, несовместимая с целями
-                    сбора персональных данных.
-                  </p>
-                  <p>
-                    <strong>5.3.</strong> Не допускается объединение баз данных, содержащих персональные данные,
-                    обработка которых осуществляется в целях, несовместимых между собой.
-                  </p>
-                  <p>
-                    <strong>5.4.</strong> Обработке подлежат только персональные данные, которые отвечают целям их
-                    обработки.
-                  </p>
-                  <p>
-                    <strong>5.5.</strong> Содержание и объем обрабатываемых персональных данных соответствуют заявленным
-                    целям обработки. Не допускается избыточность обрабатываемых персональных данных по отношению к
-                    заявленным целям их обработки.
-                  </p>
-                  <p>
-                    <strong>5.6.</strong> При обработке персональных данных обеспечивается точность персональных данных,
-                    их достаточность, а в необходимых случаях и актуальность по отношению к целям обработки персональных
-                    данных. Оператор принимает необходимые меры и/или обеспечивает их принятие по удалению или уточнению
-                    неполных или неточных данных.
-                  </p>
-                  <p>
-                    <strong>5.7.</strong> Хранение персональных данных осуществляется в форме, позволяющей определить
-                    субъекта персональных данных, не дольше, чем этого требуют цели обработки персональных данных, если
-                    срок хранения персональных данных не установлен федеральным законом, договором, стороной которого,
-                    выгодоприобретателем или поручителем по которому является субъект персональных данных.
-                    Обрабатываемые персональные данные уничтожаются либо обезличиваются по достижении целей обработки
-                    или в случае утраты необходимости в достижении этих целей, если иное не предусмотрено федеральным
-                    законом.
-                  </p>
-                </div>
-              </section>
-
-              <section>
-                <h2>6. Цели обработки персональных данных</h2>
-                <p className="mb-4">
-                  <strong>Цель обработки:</strong> предоставление доступа Пользователю к сервисам, информации и/или
-                  материалам, содержащимся на веб-сайте.
-                </p>
-                <div className="mb-4">
-                  <p className="font-semibold mb-2">Персональные данные:</p>
-                  <ul className="list-disc pl-6">
-                    <li>фамилия, имя, отчество;</li>
-                    <li>электронный адрес;</li>
-                    <li>номера телефонов.</li>
-                  </ul>
-                </div>
-                <p className="mb-4">
-                  <strong>Правовые основания:</strong> уставные (учредительные) документы Оператора.
-                </p>
-                <div>
-                  <p className="font-semibold mb-2">Виды обработки персональных данных:</p>
-                  <ul className="list-disc pl-6">
-                    <li>
-                      сбор, запись, систематизация, накопление, хранение, уничтожение и обезличивание персональных
-                      данных;
-                    </li>
-                    <li>отправка информационных писем на адрес электронной почты.</li>
-                  </ul>
-                </div>
-              </section>
-
-              <section>
-                <h2>7. Условия обработки персональных данных</h2>
-                <div className="space-y-3">
-                  <p>
-                    <strong>7.1.</strong> Обработка персональных данных осуществляется с согласия субъекта персональных
-                    данных на обработку его персональных данных.
-                  </p>
-                  <p>
-                    <strong>7.2.</strong> Обработка персональных данных необходима для достижения целей, предусмотренных
-                    международным договором Российской Федерации или законом, для осуществления возложенных
-                    законодательством Российской Федерации на оператора функций, полномочий и обязанностей.
-                  </p>
-                  <p>
-                    <strong>7.3.</strong> Обработка персональных данных необходима для осуществления правосудия,
-                    исполнения судебного акта, акта другого органа или должностного лица, подлежащих исполнению в
-                    соответствии с законодательством Российской Федерации об исполнительном производстве.
-                  </p>
-                  <p>
-                    <strong>7.4.</strong> Обработка персональных данных необходима для исполнения договора, стороной
-                    которого либо выгодоприобретателем или поручителем по которому является субъект персональных данных,
-                    а также для заключения договора по инициативе субъекта персональных данных или договора, по которому
-                    субъект персональных данных будет являться выгодоприобретателем или поручителем.
-                  </p>
-                  <p>
-                    <strong>7.5.</strong> Обработка персональных данных необходима для осуществления прав и законных
-                    интересов оператора или третьих лиц либо для достижения общественно значимых целей при условии, что
-                    при этом не нарушаются права и свободы субъекта персональных данных.
-                  </p>
-                  <p>
-                    <strong>7.6.</strong> Осуществляется обработка персональных данных, доступ неограниченного круга лиц
-                    к которым предоставлен субъектом персональных данных либо по его просьбе (далее — общедоступные
-                    персональные данные).
-                  </p>
-                  <p>
-                    <strong>7.7.</strong> Осуществляется обработка персональных данных, подлежащих опубликованию или
-                    обязательному раскрытию в соответствии с федеральным законом.
-                  </p>
-                </div>
-              </section>
-
-              <section>
-                <h2>8. Порядок сбора, хранения, передачи и других видов обработки персональных данных</h2>
-                <p className="mb-4">
-                  Безопасность персональных данных, которые обрабатываются Оператором, обеспечивается путем реализации
-                  правовых, организационных и технических мер, необходимых для выполнения в полном объеме требований
-                  действующего законодательства в области защиты персональных данных.
-                </p>
-                <div className="space-y-3">
-                  <p>
-                    <strong>8.1.</strong> Оператор обеспечивает сохранность персональных данных и принимает все
-                    возможные меры, исключающие доступ к персональным данным неуполномоченных лиц.
-                  </p>
-                  <p>
-                    <strong>8.2.</strong> Персональные данные Пользователя никогда, ни при каких условиях не будут
-                    переданы третьим лицам, за исключением случаев, связанных с исполнением действующего
-                    законодательства либо в случае, если субъектом персональных данных дано согласие Оператору на
-                    передачу данных третьему лицу для исполнения обязательств по гражданско-правовому договору.
-                  </p>
-                  <p>
-                    <strong>8.3.</strong> В случае выявления неточностей в персональных данных, Пользователь может
-                    актуализировать их самостоятельно, путем направления Оператору уведомления на адрес электронной
-                    почты Оператора welcome@wifly.ru с пометкой «Актуализация персональных данных».
-                  </p>
-                  <p>
-                    <strong>8.4.</strong> Срок обработки персональных данных определяется достижением целей, для которых
-                    были собраны персональные данные, если иной срок не предусмотрен договором или действующим
-                    законодательством. Пользователь может в любой момент отозвать свое согласие на обработку
-                    персональных данных, направив Оператору уведомление посредством электронной почты на электронный
-                    адрес Оператора welcome@wifly.ru с пометкой «Отзыв согласия на обработку персональных данных».
-                  </p>
-                  <p>
-                    <strong>8.5.</strong> Вся информация, которая собирается сторонними сервисами, в том числе
-                    платежными системами, средствами связи и другими поставщиками услуг, хранится и обрабатывается
-                    указанными лицами (Операторами) в соответствии с их Пользовательским соглашением и Политикой
-                    конфиденциальности. Субъект персональных данных и/или с указанными документами. Оператор не несет
-                    ответственность за действия третьих лиц, в том числе указанных в настоящем пункте поставщиков услуг.
-                  </p>
-                  <p>
-                    <strong>8.6.</strong> Установленные субъектом персональных данных запреты на передачу (кроме
-                    предоставления доступа), а также на обработку или условия обработки (кроме получения доступа)
-                    персональных данных, разрешенных для распространения, не действуют в случаях обработки персональных
-                    данных в государственных, общественных и иных публичных интересах, определенных законодательством
-                    РФ.
-                  </p>
-                  <p>
-                    <strong>8.7.</strong> Оператор при обработке персональных данных обеспечивает конфиденциальность
-                    персональных данных.
-                  </p>
-                  <p>
-                    <strong>8.8.</strong> Оператор осуществляет хранение персональных данных в форме, позволяющей
-                    определить субъекта персональных данных, не дольше, чем этого требуют цели обработки персональных
-                    данных, если срок хранения персональных данных не установлен федеральным законом, договором,
-                    стороной которого, выгодоприобретателем или поручителем по которому является субъект персональных
-                    данных.
-                  </p>
-                  <p>
-                    <strong>8.9.</strong> Условием прекращения обработки персональных данных может являться достижение
-                    целей обработки персональных данных, истечение срока действия согласия субъекта персональных данных,
-                    отзыв согласия субъектом персональных данных или требование о прекращении обработки персональных
-                    данных, а также выявление неправомерной обработки персональных данных.
-                  </p>
-                </div>
-              </section>
-
-              <section>
-                <h2>9. Перечень действий, производимых Оператором с полученными персональными данными</h2>
-                <div className="space-y-3">
-                  <p>
-                    <strong>9.1.</strong> Оператор осуществляет сбор, запись, систематизацию, накопление, хранение,
-                    уточнение (обновление, изменение), извлечение, использование, передачу (распространение,
-                    предоставление, доступ), обезличивание, блокирование, удаление и уничтожение персональных данных.
-                  </p>
-                  <p>
-                    <strong>9.2.</strong> Оператор осуществляет автоматизированную обработку персональных данных с
-                    получением и/или передачей полученной информации по информационно-телекоммуникационным сетям или без
-                    таковой.
-                  </p>
-                </div>
-              </section>
-
-              <section>
-                <h2>10. Трансграничная передача персональных данных</h2>
-                <div className="space-y-3">
-                  <p>
-                    <strong>10.1.</strong> Оператор до начала осуществления деятельности по трансграничной передаче
-                    персональных данных обязан уведомить уполномоченный орган по защите прав субъектов персональных
-                    данных о своем намерении осуществлять трансграничную передачу персональных данных (такое уведомление
-                    направляется отдельно от уведомления о намерении осуществлять обработку персональных данных).
-                  </p>
-                  <p>
-                    <strong>10.2.</strong> Оператор до подачи вышеуказанного уведомления обязан получить от органов
-                    власти иностранного государства, иностранных физических лиц, иностранных юридических лиц, которым
-                    планируется трансграничная передача персональных данных, соответствующие сведения.
-                  </p>
-                </div>
-              </section>
-
-              <section>
-                <h2>11. Конфиденциальность персональных данных</h2>
-                <p>
-                  Оператор и иные лица, получившие доступ к персональным данным, обязаны не раскрывать третьим лицам и
-                  не распространять персональные данные без согласия субъекта персональных данных, если иное не
-                  предусмотрено федеральным законом.
-                </p>
-              </section>
-
-              <section>
-                <h2>12. Сбор и использование технических данных</h2>
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-3">12.1. Определение технических данных</h3>
-                  <p className="mb-3">
-                    Технические данные включают информацию, автоматически собираемую при посещении Пользователем
-                    веб-сайтов https://clientpulse.ru и https://wifly.ru, в том числе:
-                  </p>
-                  <ul className="list-disc pl-6 space-y-1">
-                    <li>IP-адрес;</li>
-                    <li>данные о браузере (тип, версия, язык);</li>
-                    <li>операционная система устройства;</li>
-                    <li>файлы cookie;</li>
-                    <li>
-                      данные об активности на сайте (просмотренные страницы, время пребывания, действия на сайте);
-                    </li>
-                    <li>
-                      иная техническая информация, необходимая для обеспечения функционирования и безопасности
-                      веб-сайта.
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-3">12.2. Цели сбора технических данных</h3>
-                  <p className="mb-3">Технические данные собираются и обрабатываются в следующих целях:</p>
-                  <ul className="list-disc pl-6 space-y-1">
-                    <li>обеспечение стабильной работы веб-сайта и улучшение пользовательского опыта;</li>
-                    <li>анализ поведения Пользователей для оптимизации функционала и содержимого веб-сайта;</li>
-                    <li>
-                      обеспечение безопасности веб-сайта, включая предотвращение несанкционированного доступа и защиту
-                      от киберугроз;
-                    </li>
-                    <li>
-                      выполнение аналитических и статистических функций (например, сбор обезличенной статистики о
-                      посещаемости).
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-3">12.3. Использование файлов cookie</h3>
-                  <p className="mb-3">
-                    <strong>12.3.1.</strong> Веб-сайт использует файлы cookie — небольшие текстовые файлы, которые
-                    сохраняются на устройстве Пользователя для хранения информации о его действиях и предпочтениях.
-                  </p>
-
-                  <div className="mb-4">
-                    <p className="mb-2">
-                      <strong>12.3.2.</strong> Виды используемых файлов cookie:
-                    </p>
-                    <ul className="list-disc pl-6 space-y-2">
-                      <li>
-                        <strong>Обязательные cookie:</strong> необходимы для работы веб-сайта и предоставления
-                        Пользователю доступа к его функциям.
-                      </li>
-                      <li>
-                        <strong>Функциональные cookie:</strong> сохраняют настройки Пользователя (например, выбор языка
-                        или региона) для повышения удобства использования сайта.
-                      </li>
-                      <li>
-                        <strong>Аналитические cookie:</strong> используются для сбора обезличенной информации о
-                        взаимодействии Пользователей с веб-сайтом в целях улучшения его работы.
-                      </li>
-                      <li>
-                        <strong>Рекламные cookie:</strong> могут использоваться для предоставления персонализированных
-                        предложений и рекламы, если это применимо.
-                      </li>
-                    </ul>
-                  </div>
-
-                  <p>
-                    <strong>12.3.3.</strong> Пользователь может управлять настройками cookie через настройки своего
-                    браузера, включая возможность блокировки или удаления cookie. Отключение некоторых cookie может
-                    повлиять на функциональность веб-сайта.
-                  </p>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-3">12.4. Сторонние сервисы</h3>
-                  <p>
-                    Для анализа технических данных и улучшения работы веб-сайта Оператор может использовать сторонние
-                    сервисы (например, Яндекс.Метрика, ClientPulse). Эти сервисы могут собирать и обрабатывать
-                    технические данные в соответствии со своими политиками конфиденциальности. Оператор не несёт
-                    ответственности за действия таких сторонних сервисов, однако стремится сотрудничать только с
-                    проверенными поставщиками услуг, соблюдающими требования законодательства.
-                  </p>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-3">12.5. Срок хранения технических данных</h3>
-                  <p>
-                    Технические данные хранятся в течение срока, необходимого для достижения целей их обработки, но не
-                    дольше, чем это предусмотрено законодательством Российской Федерации или соглашениями с
-                    Пользователем. После достижения целей обработки или по запросу Пользователя технические данные
-                    обезличиваются или уничтожаются.
-                  </p>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-3">12.6. Согласие на сбор технических данных</h3>
-                  <p>
-                    Посещая веб-сайты https://clientpulse.ru и https://wifly.ru, Пользователь соглашается на сбор и
-                    обработку технических данных в соответствии с настоящей Политикой. Пользователь вправе отказаться от
-                    предоставления технических данных, изменив настройки браузера или направив запрос Оператору на адрес
-                    электронной почты welcome@wifly.ru с пометкой «Отказ от обработки технических данных».
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">12.7. Конфиденциальность технических данных</h3>
-                  <p>
-                    Оператор принимает все необходимые меры для защиты технических данных от неправомерного доступа,
-                    изменения, раскрытия или уничтожения в соответствии с требованиями законодательства Российской
-                    Федерации.
-                  </p>
-                </div>
-              </section>
-
-              <section>
-                <h2>13. Заключительные положения</h2>
-                <div className="space-y-3">
-                  <p>
-                    <strong>13.1.</strong> Пользователь может получить любые разъяснения по интересующим вопросам,
-                    касающимся обработки его персональных данных, обратившись к Оператору с помощью электронной почты
-                    welcome@wifly.ru.
-                  </p>
-                  <p>
-                    <strong>13.2.</strong> В данном документе будут отражены любые изменения политики обработки
-                    персональных данных Оператором. Политика действует бессрочно до замены ее новой версией.
-                  </p>
-                  <p>
-                    <strong>13.3.</strong> Актуальная версия Политики в свободном доступе расположена в сети Интернет по
-                    адресам https://clientpulse.ru/privacy и https://wifly.ru/privacy.
-                  </p>
-                </div>
-              </section>
-            </div>
+            {cmsText ? (
+              <div className="space-y-6">
+                {cmsText.split("\n\n").map((para, i) => (
+                  <p key={i}>{para}</p>
+                ))}
+              </div>
+            ) : (
+              <div dangerouslySetInnerHTML={{ __html: content.html }} />
+            )}
           </article>
         </div>
       </main>
