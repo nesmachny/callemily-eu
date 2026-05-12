@@ -26,7 +26,11 @@ TOKEN    = os.environ.get("EMDASH_API_TOKEN", "")
 if not TOKEN:
     print("ERROR: EMDASH_API_TOKEN not set"); sys.exit(1)
 
-HEADERS = {"Authorization": f"Bearer {TOKEN}", "Content-Type": "application/json"}
+HEADERS = {
+    "Authorization": f"Bearer {TOKEN}",
+    "Content-Type": "application/json",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+}
 
 
 # ── portableText helpers ───────────────────────────────────────────────────────

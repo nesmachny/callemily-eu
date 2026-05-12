@@ -10,12 +10,15 @@ interface AboutData {
   content?: unknown[]
 }
 
-async function getAboutPage(): Promise<AboutData | null> {
+export const dynamic = "force-dynamic"
+
+async function getAboutPage(locale: string): Promise<AboutData | null> {
   if (!cms) return null
   try {
+    const slug = locale === "pt" ? "about-pt" : "about-en"
     const result = await cms.list("pages", { status: "published" })
     const page = result.items.find(
-      (p: { slug: string | null }) => p.slug === "about"
+      (p: { slug: string | null }) => p.slug === slug
     )
     return (page?.data as AboutData) ?? null
   } catch {
@@ -52,7 +55,7 @@ export default async function AboutPage({
 }) {
   const { locale } = await params
   const tr = t(locale).about
-  const cmsData = await getAboutPage()
+  const cmsData = await getAboutPage(locale)
 
   const heroTitle = cmsData?.title ?? tr.heroFallback
   const cmsContent = cmsData?.content ?? null
