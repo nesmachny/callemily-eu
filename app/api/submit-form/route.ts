@@ -5,23 +5,18 @@
  *  1. FluentForms  — save submission to WP form on cms.callemily.eu (form ID 1)
  *  2. FluentCRM    — create/update subscriber (tagged "callemily-eu")
  *  3. Telegram     — instant notification to EU sales chat
- *  4. Email notify — lead details to hello@callemily.eu
+ *  4. Email notify — lead details to hello@callemily.eu (Cloudflare Email Sending)
  *  5. Auto-reply   — branded HTML email to customer (if email provided)
- *
- * SendGrid-compatible relay: 127.0.0.1:8025 on prod server.
- * TG_BOT_TOKEN and TG_CHAT_ID come from .env.
  */
 import { NextResponse } from "next/server"
+import { sendEmail } from "@/lib/email"
 
 const WP_URL = process.env.CMS_URL || "https://cms.callemily.eu"
 const WP_AUTH = Buffer.from(process.env.CMS_AUTH || "").toString("base64")
 const FLUENT_FORM_ID = 1
 
-const SENDGRID_API_URL = process.env.SENDGRID_API_URL || "http://127.0.0.1:8025"
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || ""
 const EMAIL_FROM = "no-reply@callemily.eu"
-const EMAIL_FROM_NAME = "CallEmily"
-const NOTIFY_EMAILS = (process.env.NOTIFY_EMAILS || "hello@callemily.eu").split(",")
+const NOTIFY_EMAILS = (process.env.NOTIFY_EMAILS || "hello@callemily.eu").split(",").map(s => s.trim()).filter(Boolean)
 
 async function submitToFluentForms(data: Record<string, string>) {
   await fetch(`${WP_URL}/wp-json/fluentform/v1/forms/${FLUENT_FORM_ID}/submissions`, {
@@ -80,7 +75,7 @@ async function sendEmailNotification(data: { name: string; phone: string; email?
   const date = new Date().toLocaleString("en-GB", { timeZone: "Europe/Lisbon" })
   const subject = `New lead from callemily.eu — ${data.name}`
 
-  const htmlBody = `
+  const html = `
 <div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;color:#333;">
   <h2 style="font-size:18px;margin-bottom:16px;">New lead from callemily.eu:</h2>
   <table style="border-collapse:collapse;width:100%;margin-bottom:24px;">
@@ -94,16 +89,9 @@ async function sendEmailNotification(data: { name: string; phone: string; email?
   <p style="font-size:12px;color:#999;">Submitted via the form at callemily.eu.</p>
 </div>`
 
-  await fetch(`${SENDGRID_API_URL}/v3/mail/send`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${SENDGRID_API_KEY}` },
-    body: JSON.stringify({
-      personalizations: NOTIFY_EMAILS.map((email) => ({ to: [{ email }] })),
-      from: { email: EMAIL_FROM, name: EMAIL_FROM_NAME },
-      subject,
-      content: [{ type: "text/html", value: htmlBody }],
-    }),
-  }).catch(() => {})
+  await Promise.all(NOTIFY_EMAILS.map(to =>
+    sendEmail({ from: EMAIL_FROM, to, subject, html })
+  ))
 }
 
 async function sendAutoReply(data: { name: string; email: string }) {
@@ -163,17 +151,12 @@ async function sendAutoReply(data: { name: string; email: string }) {
 </body>
 </html>`
 
-  await fetch(`${SENDGRID_API_URL}/v3/mail/send`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${SENDGRID_API_KEY}` },
-    body: JSON.stringify({
-      personalizations: [{ to: [{ email: data.email }] }],
-      from: { email: EMAIL_FROM, name: EMAIL_FROM_NAME },
-      reply_to: { email: "hello@callemily.eu", name: "CallEmily" },
-      subject: "Thank you for your request — CallEmily",
-      content: [{ type: "text/html", value: html }],
-    }),
-  }).catch(() => {})
+  await sendEmail({
+    from: EMAIL_FROM,
+    to: data.email,
+    subject: "Thank you for your request — CallEmily",
+    html,
+  })
 }
 
 export async function POST(request: Request) {
