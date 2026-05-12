@@ -12,6 +12,7 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3004,
+        EMDASH_URL: "https://cms.callemily.eu",
       },
       instances: 1,
       exec_mode: "fork",

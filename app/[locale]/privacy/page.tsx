@@ -126,9 +126,6 @@ Email for privacy inquiries: <a href="mailto:hello@callemily.eu">hello@callemily
 <h2>8. Cookie Policy</h2>
 <h3>8.1. Marketing Website (callemily.eu)</h3>
 <p>Our marketing website uses <strong>no tracking cookies</strong>. The only cookie set is a strictly necessary functional cookie that stores your language preference (<code>NEXT_LOCALE</code>). It contains no personal data and is exempt from consent requirements under Article 5(3) of the ePrivacy Directive.</p>
-<h3>8.2. Cookie Consent Banner</h3>
-<p>You may dismiss the cookie banner at any time. Your preference is stored locally and we will not set any non-essential cookies without your consent.</p>
-
 <h2>9. Security Measures</h2>
 <p>CallEmily implements appropriate technical and organizational measures to protect personal data:</p>
 <ul>
@@ -232,9 +229,6 @@ Email para questões de privacidade: <a href="mailto:hello@callemily.eu">hello@c
 <h2>8. Política de Cookies</h2>
 <h3>8.1. Sítio de Marketing (callemily.eu)</h3>
 <p>O nosso sítio de marketing <strong>não utiliza cookies de rastreio</strong>. O único cookie definido é um cookie funcional estritamente necessário que armazena a sua preferência de idioma (<code>NEXT_LOCALE</code>). Não contém dados pessoais e está isento de requisitos de consentimento ao abrigo do Artigo 5.º, n.º 3 da Diretiva ePrivacy.</p>
-<h3>8.2. Banner de Consentimento de Cookies</h3>
-<p>Pode dispensar o banner de cookies a qualquer momento. A sua preferência é armazenada localmente e não definiremos cookies não essenciais sem o seu consentimento.</p>
-
 <h2>9. Medidas de Segurança</h2>
 <p>A CallEmily implementa medidas técnicas e organizacionais adequadas para proteger os dados pessoais:</p>
 <ul>

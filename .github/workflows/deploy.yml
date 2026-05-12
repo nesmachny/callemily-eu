@@ -76,6 +76,7 @@ jobs:
             touch .env
             for VAR in EMDASH_URL EMDASH_API_TOKEN REVALIDATION_SECRET TG_BOT_TOKEN TG_CHAT_ID; do
               VALUE=$(printenv "$VAR")
+              if [ -z "$VALUE" ]; then continue; fi
               if grep -q "^${VAR}=" .env; then
                 sed -i "s|^${VAR}=.*|${VAR}=${VALUE}|" .env
               else

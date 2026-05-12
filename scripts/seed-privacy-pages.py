@@ -139,10 +139,6 @@ def build_en():
         p(span("The only cookie used is "), span("NEXT_LOCALE", ["code"]),
           span(", a strictly necessary functional cookie storing your preferred language. "
                "It contains no personal data and is exempt from consent requirements under Article 5(3) of the ePrivacy Directive.")),
-        h3("8.2. Cookie Consent Banner"),
-        p(span("You may dismiss the cookie banner at any time. Your preference is stored locally and we will not set "
-               "non-essential cookies without your consent.")),
-
         h2("9. Security Measures"),
         p(span("CallEmily implements appropriate technical and organisational measures to protect personal data:")),
         li(span("Encryption of data in transit (TLS 1.3) and at rest (AES-256);")),
@@ -262,10 +258,6 @@ def build_pt():
         p(span("O único cookie utilizado é "), span("NEXT_LOCALE", ["code"]),
           span(", um cookie funcional estritamente necessário que armazena a sua preferência de idioma. "
                "Não contém dados pessoais e está isento de requisitos de consentimento ao abrigo do Artigo 5.º, n.º 3 da Diretiva ePrivacy.")),
-        h3("8.2. Banner de Consentimento de Cookies"),
-        p(span("Pode dispensar o banner de cookies a qualquer momento. A sua preferência é armazenada localmente "
-               "e não definiremos cookies não essenciais sem o seu consentimento.")),
-
         h2("9. Medidas de Segurança"),
         p(span("A CallEmily implementa medidas técnicas e organizacionais adequadas para proteger os dados pessoais:")),
         li(span("Encriptação dos dados em trânsito (TLS 1.3) e em repouso (AES-256);")),
