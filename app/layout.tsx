@@ -3,7 +3,6 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Unbounded, Onest } from "next/font/google"
 import { Suspense } from "react"
-import EnvFixScript from "@/components/env-fix-script"
 import Script from "next/script"
 import { headers } from "next/headers"
 
@@ -112,7 +111,6 @@ export default async function RootLayout({
         <meta name="theme-color" content="#E85D2C" />
       </head>
       <body>
-        <EnvFixScript />
         <Suspense>
           {children}
         </Suspense>

@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 
 export const runtime = 'nodejs'
-export const alt = 'CallEmily - Голосовой помощник для ресторанов'
+export const alt = 'CallEmily — AI voice assistant for restaurants and clinics'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -55,7 +55,7 @@ export default async function OGImage() {
             marginBottom: '16px',
           }}
         >
-          Голосовой помощник для ресторанов
+          AI voice assistant for restaurants
         </h1>
         <p
           style={{
@@ -64,7 +64,7 @@ export default async function OGImage() {
             lineHeight: 1.4,
           }}
         >
-          Автоматизируйте бронирование столиков и увеличивайте бронирования на 20–30%
+          Automate bookings and capture 20–30% more inbound calls
         </p>
       </div>
     ),

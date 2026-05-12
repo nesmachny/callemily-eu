@@ -2,17 +2,19 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { cms } from "@/lib/emdash"
 import { LOCALES } from "@/lib/i18n"
+import { t } from "@/lib/translations"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
+  const tr = t(locale).blog
   return {
-    title: "Блог | CallEmily",
-    description: "Статьи о голосовом AI для бизнеса, автоматизации звонков и росте продаж.",
+    title: tr.metaTitle,
+    description: tr.metaDescription,
     alternates: {
       canonical: `${siteUrl}/${locale}/blog`,
-      languages: { ru: `${siteUrl}/ru/blog`, kk: `${siteUrl}/kk/blog`, uz: `${siteUrl}/uz/blog`, "x-default": `${siteUrl}/ru/blog` },
+      languages: { en: `${siteUrl}/en/blog`, pt: `${siteUrl}/pt/blog`, "x-default": `${siteUrl}/en/blog` },
     },
     openGraph: { url: `${siteUrl}/${locale}/blog` },
   }
@@ -45,31 +47,33 @@ async function getPosts(): Promise<Post[]> {
   }
 }
 
-function formatDate(iso: string | null) {
+function formatDate(iso: string | null, locale: string) {
   if (!iso) return ""
-  return new Date(iso).toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" })
+  const dateLocale = t(locale).blog.dateLocale
+  return new Date(iso).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" })
 }
 
 export default async function BlogPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
+  const tr = t(locale).blog
   const posts = await getPosts()
 
   return (
     <section className="ce-section">
       <div className="ce-wrap">
         <div style={{ textAlign: "center", marginBottom: 56 }}>
-          <span className="ce-eyebrow" style={{ marginBottom: 12 }}>Блог</span>
+          <span className="ce-eyebrow" style={{ marginBottom: 12 }}>{tr.eyebrow}</span>
           <h1 className="ce-h-display" style={{ fontSize: "clamp(32px, 4vw, 52px)", margin: 0 }}>
-            Голосовой AI для бизнеса
+            {tr.h1}
           </h1>
           <p style={{ fontSize: 18, color: "var(--ce-text-2)", marginTop: 16, maxWidth: 560, margin: "16px auto 0" }}>
-            Кейсы, советы и новости об автоматизации звонков.
+            {tr.sub}
           </p>
         </div>
 
         {posts.length === 0 ? (
           <div style={{ textAlign: "center", padding: "80px 0", color: "var(--ce-muted)" }}>
-            <p style={{ fontSize: 16 }}>Статьи скоро появятся.</p>
+            <p style={{ fontSize: 16 }}>{tr.empty}</p>
           </div>
         ) : (
           <div className="ce-blog-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 28 }}>
@@ -97,14 +101,14 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
                 }}>
                   {post.publishedAt && (
                     <div style={{ fontSize: 12, color: "var(--ce-muted)", marginBottom: 10 }}>
-                      {formatDate(post.publishedAt)}
+                      {formatDate(post.publishedAt, locale)}
                     </div>
                   )}
                   <h2 style={{
                     fontFamily: "var(--font-unbounded), sans-serif", fontWeight: 700,
                     fontSize: 17, color: "var(--ce-text)", margin: "0 0 10px", lineHeight: 1.4,
                   }}>
-                    {post.data.title ?? "Без названия"}
+                    {post.data.title ?? tr.untitled}
                   </h2>
                   {post.data.excerpt && (
                     <p style={{ fontSize: 14, color: "var(--ce-text-2)", lineHeight: 1.6, margin: "0 0 16px" }}>
@@ -112,7 +116,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
                     </p>
                   )}
                   <span style={{ fontSize: 13, color: "var(--ce-primary)", fontWeight: 600 }}>
-                    Читать →
+                    {tr.readMore}
                   </span>
                 </div>
               </Link>

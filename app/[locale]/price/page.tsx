@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import PricePageClient from "./PricePageClient"
 import { getMenu } from "@/lib/menu"
+import { t } from "@/lib/translations"
 
 export async function generateMetadata({
   params,
@@ -8,13 +9,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  const meta = t(locale).meta
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
   return {
-    title: "Тарифы CallEmily — Голосовой ИИ для ресторанов",
-    description: "Гибкие тарифы CallEmily для автоматизации бронирований. Экономьте с первого дня! Попробуйте бесплатно 14 дней.",
+    title: meta.priceTitle,
+    description: meta.priceDescription,
     alternates: {
       canonical: `${siteUrl}/${locale}/price`,
-      languages: { ru: `${siteUrl}/ru/price`, kk: `${siteUrl}/kk/price`, uz: `${siteUrl}/uz/price`, "x-default": `${siteUrl}/ru/price` },
+      languages: { en: `${siteUrl}/en/price`, pt: `${siteUrl}/pt/price`, "x-default": `${siteUrl}/en/price` },
     },
     openGraph: { url: `${siteUrl}/${locale}/price` },
   }

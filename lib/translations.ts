@@ -182,6 +182,35 @@ const translations = {
       decline: "Decline",
     },
 
+    blog: {
+      eyebrow: "Blog",
+      h1: "AI voice for business",
+      sub: "Case studies, tips and news on call automation.",
+      empty: "Articles coming soon.",
+      readMore: "Read →",
+      untitled: "Untitled",
+      allArticles: "All articles",
+      emptyContent: "Article content coming soon.",
+      notFoundTitle: "Article not found | CallEmily",
+      articleFallback: "Article",
+      metaTitle: "Blog | CallEmily",
+      metaDescription: "Articles on AI voice for business, call automation and revenue growth.",
+      dateLocale: "en-GB",
+    },
+
+    meta: {
+      priceTitle: "Pricing | CallEmily — AI Voice Assistant",
+      priceDescription: "Flexible CallEmily pricing tailored to your call volume and integrations. Personalised ROI in 24 hours, 30-day pilot.",
+      roicalcTitle: "ROI Calculator | CallEmily",
+      roicalcDescription: "Calculate how much revenue your business is losing on missed phone calls and what you can recover with Emily.",
+      roicalcOgTitle: "ROI Calculator for Restaurants, Clinics & Dealerships | CallEmily",
+      roicalcOgDescription: "See how much you could be losing every month on missed inbound calls.",
+      roicalcH1: "ROI calculator for your business",
+      ogAlt: "CallEmily — AI voice assistant for restaurants and clinics",
+      ogH1: "AI voice assistant for restaurants",
+      ogSub: "Automate bookings and capture 20–30% more inbound calls",
+    },
+
     roi: {
       eyebrow: "Calculator",
       h2Part1: "How much you're losing",
@@ -577,6 +606,35 @@ const translations = {
       ],
       cta: "Ver preços",
       menuLabel: "Menu",
+    },
+
+    blog: {
+      eyebrow: "Blog",
+      h1: "IA de voz para o seu negócio",
+      sub: "Casos, dicas e novidades sobre automação de chamadas.",
+      empty: "Artigos em breve.",
+      readMore: "Ler →",
+      untitled: "Sem título",
+      allArticles: "Todos os artigos",
+      emptyContent: "O conteúdo do artigo estará disponível em breve.",
+      notFoundTitle: "Artigo não encontrado | CallEmily",
+      articleFallback: "Artigo",
+      metaTitle: "Blog | CallEmily",
+      metaDescription: "Artigos sobre IA de voz para negócios, automação de chamadas e crescimento de receita.",
+      dateLocale: "pt-PT",
+    },
+
+    meta: {
+      priceTitle: "Preços | CallEmily — Assistente de Voz IA",
+      priceDescription: "Preços flexíveis CallEmily adaptados ao seu volume de chamadas e integrações. ROI personalizado em 24h, piloto de 30 dias.",
+      roicalcTitle: "Calculadora de ROI | CallEmily",
+      roicalcDescription: "Calcule quanta receita o seu negócio está a perder com chamadas não atendidas e o que pode recuperar com a Emily.",
+      roicalcOgTitle: "Calculadora de ROI para restaurantes, clínicas e concessionárias | CallEmily",
+      roicalcOgDescription: "Veja quanto pode estar a perder todos os meses em chamadas perdidas.",
+      roicalcH1: "Calculadora de ROI para o seu negócio",
+      ogAlt: "CallEmily — assistente de voz IA para restaurantes e clínicas",
+      ogH1: "Assistente de voz IA para restaurantes",
+      ogSub: "Automatize reservas e capte mais 20–30% das chamadas recebidas",
     },
 
     cookie: {

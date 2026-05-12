@@ -54,18 +54,13 @@ const config: Config = {
         "blue-dark": "#1A3C5A",
       },
       borderRadius: {
-        // Используем стандартные значения Tailwind для sm, md, lg
-        // Это должно обеспечить совместимость с shadcn/ui и другими компонентами
-        sm: "0.375rem", // 6px
-        md: "0.5rem", // 8px (стандартно для md в Tailwind)
-        lg: "0.75rem", // 12px (стандартно для lg в Tailwind)
-        xl: "1rem", // 16px (было 1.5rem, но 1rem более стандартно для xl)
-        "2xl": "1.5rem", // 24px (было 2rem)
-        "3xl": "2rem", // 32px (было 2.5rem)
+        sm: "0.375rem",
+        md: "0.5rem",
+        lg: "0.75rem",
+        xl: "1rem",
+        "2xl": "1.5rem",
+        "3xl": "2rem",
         full: "9999px",
-        // Оставляем возможность использовать --radius, если он где-то явно задан
-        // но для стандартных sm, md, lg используем явные значения
-        // radius: "var(--radius)", // Можно оставить, если нужно
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
