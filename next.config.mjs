@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
   trailingSlash: false,
   eslint: {
     ignoreDuringBuilds: true,

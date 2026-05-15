@@ -24,10 +24,10 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 
 export const metadata: Metadata = {
   title: {
-    default: "CallEmily — AI Voice Assistant for Restaurants & Clinics",
+    default: "CallEmily Voice Assistant for Restaurants and Clinics",
     template: "%s | CallEmily",
   },
-  description: "Automate table reservations and appointment booking with CallEmily. AI voice assistant answers calls 24/7 and integrates with your CRM.",
+  description: "CallEmily voice assistant for restaurants, clinics and car dealerships. Answers calls 24/7, books reservations and increases bookings by 20–30%.",
   keywords: [
     "voice AI assistant",
     "restaurant automation",
@@ -53,8 +53,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "CallEmily — AI Voice Assistant for Restaurants & Clinics",
-    description: "Automate table reservations and appointment booking with CallEmily. AI voice assistant answers calls 24/7 and integrates with your CRM.",
+    title: "CallEmily Voice Assistant for Restaurants and Clinics",
+    description: "CallEmily voice assistant for restaurants, clinics and car dealerships. Answers calls 24/7, books reservations and increases bookings by 20–30%.",
     url: siteUrl,
     siteName: "CallEmily",
     locale: "en_US",
@@ -62,8 +62,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "CallEmily — AI Voice Assistant for Restaurants & Clinics",
-    description: "Automate table reservations and appointment booking with CallEmily. AI voice assistant answers calls 24/7.",
+    title: "CallEmily Voice Assistant for Restaurants and Clinics",
+    description: "CallEmily voice assistant for restaurants, clinics and car dealerships. Answers calls 24/7, books reservations and increases bookings by 20–30%.",
     creator: "@callemily",
   },
   robots: {

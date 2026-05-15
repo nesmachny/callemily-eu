@@ -24,7 +24,8 @@ export default function CasesSection({ cases, locale }: { cases: CaseItem[]; loc
               <div style={{ height: 200, position: "relative", overflow: "hidden", background: "var(--ce-bg)" }}>
                 <img
                   src={c.photo || FALLBACK_PHOTOS[i % FALLBACK_PHOTOS.length]}
-                  alt={c.name}
+                  alt={`CallEmily case study: ${c.name}`}
+                  loading="lazy"
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
                 <span className="ce-chip" style={{ position: "absolute", top: 14, left: 14, background: "rgba(255,255,255,.95)" }}>{c.tag}</span>

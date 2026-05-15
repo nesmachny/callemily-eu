@@ -96,6 +96,9 @@ export default function HeroSection({ locale }: { locale: string }) {
         <div className="ce-hero-grid" style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 56, alignItems: "center" }}>
           <div>
             <h1 className="ce-h-display" style={{ fontSize: "clamp(36px, 5.5vw, 72px)", margin: "0 0 24px", lineHeight: 1.05 }}>
+              <span style={{ display: "block", fontSize: 13, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ce-primary)", marginBottom: 14, fontFamily: "var(--font-onest), sans-serif" }}>
+                {tr.eyebrow}
+              </span>
               {c.h1}{" "}
               <span style={{ color: "var(--ce-primary)", backgroundImage: "linear-gradient(180deg, transparent 65%, var(--ce-accent-soft) 65%)", backgroundRepeat: "no-repeat" }}>{c.emph}</span>
               {c.tail ? " " + c.tail : ""}
@@ -127,7 +130,7 @@ export default function HeroSection({ locale }: { locale: string }) {
           {/* Right visual */}
           <div className="ce-hero-visual" style={{ position: "relative", height: 560 }}>
             <div style={{ position: "absolute", inset: 0, borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 80px -30px rgba(26,20,16,.35)" }}>
-              <img key={industry} src={PHOTOS[industry]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity .4s ease" }} />
+              <img key={industry} src={PHOTOS[industry]} alt={`${tr.eyebrow} — ${tr.industries[industry]}`} loading="eager" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity .4s ease" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,.35))" }} />
             </div>
 

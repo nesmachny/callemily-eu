@@ -26,12 +26,16 @@ export async function generateMetadata({
   const { locale } = await params
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
   const url = `${siteUrl}/${locale}`
+  const meta = t(locale).meta
   return {
+    title: { absolute: meta.homeTitle },
+    description: meta.homeDescription,
     alternates: {
       canonical: url,
       languages: { en: `${siteUrl}/en`, pt: `${siteUrl}/pt`, "x-default": `${siteUrl}/en` },
     },
-    openGraph: { url },
+    openGraph: { url, title: meta.homeTitle, description: meta.homeDescription },
+    twitter: { title: meta.homeTitle, description: meta.homeDescription },
   }
 }
 
@@ -52,6 +56,14 @@ const websiteSchema = {
   url: "https://callemily.eu",
   description: "AI voice assistant for restaurants, clinics and car dealerships — automates calls and bookings 24/7",
 }
+
+const breadcrumbSchema = (locale: string) => ({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `https://callemily.eu/${locale}` },
+  ],
+})
 
 export default async function HomePage({
   params,
@@ -83,6 +95,7 @@ export default async function HomePage({
       <FAQSchema items={faqItems} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema(locale)) }} />
     </>
   )
 }
