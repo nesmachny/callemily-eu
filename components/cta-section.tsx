@@ -16,6 +16,20 @@ export default function CTASection() {
   const [phone, setPhone] = useState("")
   const [company, setCompany] = useState("")
 
+  const handlePhoneChange = (raw: string) => {
+    let cleaned = raw.replace(/[^\d+\s()-]/g, "")
+    cleaned = cleaned.replace(/(?!^)\+/g, "")
+    const digits = cleaned.replace(/\D/g, "")
+    if (digits.length > 15) {
+      let kept = 0
+      cleaned = Array.from(cleaned).filter(ch => {
+        if (/\d/.test(ch)) { if (kept >= 15) return false; kept++; return true }
+        return true
+      }).join("")
+    }
+    setPhone(cleaned)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const digits = phone.replace(/\D/g, "")
@@ -85,7 +99,7 @@ export default function CTASection() {
               <form onSubmit={handleSubmit}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   <input style={inputStyle} placeholder={tr.namePlaceholder} value={name} onChange={e => setName(e.target.value)} required />
-                  <input style={inputStyle} type="tel" inputMode="tel" autoComplete="tel" maxLength={20} placeholder={tr.phonePlaceholder} value={phone} onChange={e => setPhone(e.target.value)} required />
+                  <input style={inputStyle} type="tel" inputMode="tel" autoComplete="tel" maxLength={20} placeholder={tr.phonePlaceholder} value={phone} onChange={e => handlePhoneChange(e.target.value)} required />
                   <input style={inputStyle} placeholder={tr.companyPlaceholder} value={company} onChange={e => setCompany(e.target.value)} />
                   <button type="submit" className="ce-btn ce-btn-primary" disabled={loading} style={{ marginTop: 8, justifyContent: "center" }}>
                     {loading ? tr.btnLoading : tr.btnSubmit}
