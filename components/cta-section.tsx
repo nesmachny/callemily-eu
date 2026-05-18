@@ -18,6 +18,11 @@ export default function CTASection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const digits = phone.replace(/\D/g, "")
+    if (digits.length < 7 || digits.length > 15) {
+      setError(tr.errorPhoneInvalid)
+      return
+    }
     setLoading(true)
     setError("")
     try {
@@ -80,7 +85,7 @@ export default function CTASection() {
               <form onSubmit={handleSubmit}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   <input style={inputStyle} placeholder={tr.namePlaceholder} value={name} onChange={e => setName(e.target.value)} required />
-                  <input style={inputStyle} placeholder={tr.phonePlaceholder} value={phone} onChange={e => setPhone(e.target.value)} required />
+                  <input style={inputStyle} type="tel" inputMode="tel" autoComplete="tel" maxLength={20} placeholder={tr.phonePlaceholder} value={phone} onChange={e => setPhone(e.target.value)} required />
                   <input style={inputStyle} placeholder={tr.companyPlaceholder} value={company} onChange={e => setCompany(e.target.value)} />
                   <button type="submit" className="ce-btn ce-btn-primary" disabled={loading} style={{ marginTop: 8, justifyContent: "center" }}>
                     {loading ? tr.btnLoading : tr.btnSubmit}

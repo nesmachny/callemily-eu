@@ -171,6 +171,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: "Please provide a phone number or email" }, { status: 400 })
     }
 
+    if (phone) {
+      const digits = String(phone).replace(/\D/g, "")
+      if (digits.length < 7 || digits.length > 15) {
+        return NextResponse.json({ success: false, message: "Please enter a valid phone number (7–15 digits)" }, { status: 400 })
+      }
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (email && !emailRegex.test(email)) {
       return NextResponse.json({ success: false, message: "Invalid email format" }, { status: 400 })

@@ -146,6 +146,7 @@ const translations = {
       btnLoading: "Sending...",
       note: "We'll call within 15 minutes during business hours. Estimate sent by email.",
       errorDefault: "Something went wrong. Please try again.",
+      errorPhoneInvalid: "Please enter a valid phone number (7–15 digits, e.g. +351 912 345 678).",
     },
 
     footer: {
@@ -584,6 +585,7 @@ const translations = {
       btnLoading: "A enviar...",
       note: "Ligamos em 15 minutos durante o horário laboral. Proposta enviada por email.",
       errorDefault: "Algo correu mal. Por favor tente novamente.",
+      errorPhoneInvalid: "Introduza um número de telefone válido (7–15 dígitos, ex.: +351 912 345 678).",
     },
 
     footer: {
