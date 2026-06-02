@@ -33,18 +33,29 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   const tr = t(locale).about
+  const pageTitle = `${tr.contactH2 === "Get in touch" ? "About" : "Sobre nós"} | CallEmily`
+  const pageDesc = tr.heroSubFallback
+  const pageUrl = `${siteUrl}/${locale}/about`
   return {
-    title: `${tr.contactH2 === "Get in touch" ? "About" : "Sobre nós"} | CallEmily`,
-    description: tr.heroSubFallback,
+    title: pageTitle,
+    description: pageDesc,
     alternates: {
-      canonical: `${siteUrl}/${locale}/about`,
+      canonical: pageUrl,
       languages: {
         en: `${siteUrl}/en/about`,
         pt: `${siteUrl}/pt/about`,
         "x-default": `${siteUrl}/en/about`,
       },
     },
-    openGraph: { url: `${siteUrl}/${locale}/about` },
+    openGraph: {
+      title: pageTitle,
+      description: pageDesc,
+      url: pageUrl,
+    },
+    twitter: {
+      title: pageTitle,
+      description: pageDesc,
+    },
   }
 }
 

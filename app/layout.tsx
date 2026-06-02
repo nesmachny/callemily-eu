@@ -45,13 +45,6 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL(siteUrl),
-  alternates: {
-    canonical: "/",
-    languages: {
-      "en": "/",
-      "pt": "/",
-    },
-  },
   openGraph: {
     title: "CallEmily Voice Assistant for Restaurants and Clinics",
     description: "CallEmily voice assistant for restaurants, clinics and car dealerships. Answers calls 24/7, books reservations and increases bookings by 20–30%.",

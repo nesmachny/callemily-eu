@@ -9,14 +9,25 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const tr = t(locale).blog
+  const pageTitle = tr.metaTitle
+  const pageDesc = tr.metaDescription
+  const pageUrl = `${siteUrl}/${locale}/blog`
   return {
-    title: tr.metaTitle,
-    description: tr.metaDescription,
+    title: pageTitle,
+    description: pageDesc,
     alternates: {
-      canonical: `${siteUrl}/${locale}/blog`,
+      canonical: pageUrl,
       languages: { en: `${siteUrl}/en/blog`, pt: `${siteUrl}/pt/blog`, "x-default": `${siteUrl}/en/blog` },
     },
-    openGraph: { url: `${siteUrl}/${locale}/blog` },
+    openGraph: {
+      title: pageTitle,
+      description: pageDesc,
+      url: pageUrl,
+    },
+    twitter: {
+      title: pageTitle,
+      description: pageDesc,
+    },
   }
 }
 

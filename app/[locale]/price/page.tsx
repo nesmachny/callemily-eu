@@ -11,14 +11,25 @@ export async function generateMetadata({
   const { locale } = await params
   const meta = t(locale).meta
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
+  const pageTitle = meta.priceTitle
+  const pageDesc = meta.priceDescription
+  const pageUrl = `${siteUrl}/${locale}/price`
   return {
-    title: meta.priceTitle,
-    description: meta.priceDescription,
+    title: pageTitle,
+    description: pageDesc,
     alternates: {
-      canonical: `${siteUrl}/${locale}/price`,
+      canonical: pageUrl,
       languages: { en: `${siteUrl}/en/price`, pt: `${siteUrl}/pt/price`, "x-default": `${siteUrl}/en/price` },
     },
-    openGraph: { url: `${siteUrl}/${locale}/price` },
+    openGraph: {
+      title: pageTitle,
+      description: pageDesc,
+      url: pageUrl,
+    },
+    twitter: {
+      title: pageTitle,
+      description: pageDesc,
+    },
   }
 }
 

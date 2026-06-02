@@ -2,6 +2,15 @@ import Link from "next/link"
 import { headers } from "next/headers"
 import SiteHeader from "@/components/header-server"
 import SiteFooter from "@/components/footer"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Page not found | CallEmily",
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 export default async function NotFound() {
   const headersList = await headers()

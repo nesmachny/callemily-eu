@@ -38,14 +38,29 @@ export async function generateMetadata({
   const post = await getPost(slug)
   if (!post) return { title: tr.notFoundTitle }
   const data = post.data as PostData
+  const pageTitle = `${data.title ?? tr.articleFallback} | CallEmily`
+  const pageDesc = data.excerpt
+  const pageUrl = `${siteUrl}/${locale}/blog/${slug}`
   return {
-    title: `${data.title ?? tr.articleFallback} | CallEmily`,
-    description: data.excerpt ?? undefined,
-    alternates: { canonical: `${siteUrl}/${locale}/blog/${slug}` },
+    title: pageTitle,
+    description: pageDesc,
+    alternates: {
+      canonical: pageUrl,
+      languages: {
+        en: `${siteUrl}/en/blog/${slug}`,
+        pt: `${siteUrl}/pt/blog/${slug}`,
+        "x-default": `${siteUrl}/en/blog/${slug}`,
+      },
+    },
     openGraph: {
-      title: data.title,
-      description: data.excerpt,
+      title: data.title ?? pageTitle,
+      description: pageDesc,
+      url: pageUrl,
       images: data.featuredImage?.url ? [{ url: data.featuredImage.url }] : undefined,
+    },
+    twitter: {
+      title: data.title ?? pageTitle,
+      description: pageDesc,
     },
   }
 }
@@ -113,7 +128,9 @@ export default async function BlogPostPage({
           <div className="ce-wrap" style={{ maxWidth: 900, padding: "0 var(--ce-wrap-px)" }}>
             <img
               src={data.featuredImage.url}
-              alt={data.featuredImage.alt ?? ""}
+              alt={data.featuredImage.alt ?? data.title ?? ""}
+              width={900}
+              height={480}
               style={{ width: "100%", maxHeight: 480, objectFit: "cover", borderRadius: 20, display: "block" }}
             />
           </div>

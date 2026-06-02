@@ -130,7 +130,7 @@ export default function HeroSection({ locale }: { locale: string }) {
           {/* Right visual */}
           <div className="ce-hero-visual" style={{ position: "relative", height: 560 }}>
             <div style={{ position: "absolute", inset: 0, borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 80px -30px rgba(26,20,16,.35)" }}>
-              <img key={industry} src={PHOTOS[industry]} alt={`${tr.eyebrow} — ${tr.industries[industry]}`} loading="eager" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity .4s ease" }} />
+              <img key={industry} src={PHOTOS[industry]} alt={`${tr.eyebrow} — ${tr.industries[industry]}`} loading="eager" fetchPriority="high" width={900} height={560} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity .4s ease" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,.35))" }} />
             </div>
 
