@@ -3,6 +3,7 @@ import Link from "next/link"
 import { cms } from "@/lib/emdash"
 import { LOCALES } from "@/lib/i18n"
 import { t } from "@/lib/translations"
+import Image from "next/image"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 
@@ -97,10 +98,12 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
               >
                 {post.data.featuredImage?.url && (
                   <div style={{ aspectRatio: "16/9", overflow: "hidden", borderRadius: "16px 16px 0 0", background: "var(--ce-surface)" }}>
-                    <img
+                    <Image
                       src={post.data.featuredImage.url}
                       alt={post.data.featuredImage.alt ?? ""}
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      width={600}
+                      height={338}
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 )}

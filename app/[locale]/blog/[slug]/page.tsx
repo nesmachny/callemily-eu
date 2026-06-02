@@ -5,6 +5,7 @@ import { cms } from "@/lib/emdash"
 import { LOCALES } from "@/lib/i18n"
 import PortableText from "@/components/portable-text"
 import { t } from "@/lib/translations"
+import Image from "next/image"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://callemily.eu"
 
@@ -126,12 +127,12 @@ export default async function BlogPostPage({
       {data.featuredImage?.url && (
         <div style={{ background: "var(--ce-surface)" }}>
           <div className="ce-wrap" style={{ maxWidth: 900, padding: "0 var(--ce-wrap-px)" }}>
-            <img
+            <Image
               src={data.featuredImage.url}
               alt={data.featuredImage.alt ?? data.title ?? ""}
               width={900}
               height={480}
-              style={{ width: "100%", maxHeight: 480, objectFit: "cover", borderRadius: 20, display: "block" }}
+              className="w-full max-h-[480px] object-cover rounded-3xl block"
             />
           </div>
         </div>

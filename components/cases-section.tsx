@@ -1,5 +1,6 @@
 import type { CaseItem } from "@/lib/cases"
 import { t } from "@/lib/translations"
+import Image from "next/image"
 
 const FALLBACK_PHOTOS = [
   "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
@@ -22,13 +23,13 @@ export default function CasesSection({ cases, locale }: { cases: CaseItem[]; loc
           {cases.map((c, i) => (
             <article key={c.slug} className="ce-card ce-card-hover" style={{ overflow: "hidden", display: "flex", flexDirection: "column" }}>
               <div style={{ height: 200, position: "relative", overflow: "hidden", background: "var(--ce-bg)" }}>
-                <img
+                <Image
                   src={c.photo || FALLBACK_PHOTOS[i % FALLBACK_PHOTOS.length]}
                   alt={`CallEmily case study: ${c.name}`}
-                  loading="lazy"
                   width={800}
                   height={200}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
                 />
                 <span className="ce-chip" style={{ position: "absolute", top: 14, left: 14, background: "rgba(255,255,255,.95)" }}>{c.tag}</span>
               </div>

@@ -70,9 +70,9 @@ export default function ROICalculator({ industry = "restaurant" }: { industry?: 
           <p style={{ fontSize: 18, color: "var(--ce-text-2)", marginTop: 18, maxWidth: 580 }}>{tr.sub}</p>
         </div>
 
-        <div className="ce-roi-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div className="ce-roi-grid grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Inputs */}
-          <div className="ce-card" style={{ padding: 32, display: "flex", flexDirection: "column", gap: 28 }}>
+          <div className="ce-card p-8 flex flex-col gap-7">
             <div style={{ fontSize: 12, color: "var(--ce-muted)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
               {/* "Parameters · Restaurant" */}
               {locale === "pt" ? "Parâmetros" : "Parameters"} · {preset.label}
@@ -94,10 +94,7 @@ export default function ROICalculator({ industry = "restaurant" }: { industry?: 
           </div>
 
           {/* Result */}
-          <div style={{
-            background: "var(--ce-text)", borderRadius: 24, padding: 32,
-            position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", gap: 24,
-          }}>
+          <div className="bg-[var(--ce-text)] rounded-3xl p-8 relative overflow-hidden flex flex-col gap-6">
             <div style={{ position: "absolute", top: -100, right: -100, width: 360, height: 360, background: "radial-gradient(circle, rgba(232,93,44,.32) 0%, transparent 65%)", pointerEvents: "none" }} />
 
             <div style={{ position: "relative", zIndex: 1 }}>
@@ -124,13 +121,7 @@ export default function ROICalculator({ industry = "restaurant" }: { industry?: 
             </div>
 
             <div style={{ position: "relative", zIndex: 1 }}>
-              <a href="#cta" style={{
-                display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                padding: "14px 24px", background: "var(--ce-accent)", color: "var(--ce-text)",
-                borderRadius: 12, fontFamily: "var(--font-onest), sans-serif",
-                fontWeight: 600, fontSize: 15, textDecoration: "none",
-                boxShadow: "0 10px 26px -8px rgba(245,200,66,.5)",
-              }}>
+              <a href="#cta" className="ce-btn ce-btn-primary w-full justify-center">
                 {tr.btnCta}
               </a>
               <p style={{ fontSize: 12, color: "rgba(255,255,255,.4)", textAlign: "center", margin: "12px 0 0", lineHeight: 1.5 }}>

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { t } from "@/lib/translations"
+import Image from "next/image"
 
 type Industry = "restaurant" | "clinic" | "auto"
 
@@ -93,13 +94,13 @@ export default function HeroSection({ locale }: { locale: string }) {
         </div>
 
         {/* Two-column grid */}
-        <div className="ce-hero-grid" style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 56, alignItems: "center" }}>
+        <div className="ce-hero-grid grid grid-cols-1 md:grid-cols-[1.05fr_1fr] gap-14 items-center">
           <div>
+            <div style={{ display: "block", fontSize: 13, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ce-primary)", marginBottom: 14, fontFamily: "var(--font-onest), sans-serif" }}>
+              {tr.eyebrow}
+            </div>
             <h1 className="ce-h-display" style={{ fontSize: "clamp(36px, 5.5vw, 72px)", margin: "0 0 24px", lineHeight: 1.05 }}>
-              <span style={{ display: "block", fontSize: 13, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ce-primary)", marginBottom: 14, fontFamily: "var(--font-onest), sans-serif" }}>
-                {tr.eyebrow}
-              </span>
-              {' '}{c.h1}{' '}
+              {c.h1}{' '}
               <span style={{ color: "var(--ce-primary)", backgroundImage: "linear-gradient(180deg, transparent 65%, var(--ce-accent-soft) 65%)", backgroundRepeat: "no-repeat" }}>{c.emph}</span>
               {c.tail ? " " + c.tail : ""}
             </h1>
@@ -128,14 +129,22 @@ export default function HeroSection({ locale }: { locale: string }) {
           </div>
 
           {/* Right visual */}
-          <div className="ce-hero-visual" style={{ position: "relative", height: 560 }}>
-            <div style={{ position: "absolute", inset: 0, borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 80px -30px rgba(26,20,16,.35)" }}>
-              <img key={industry} src={PHOTOS[industry]} alt={`${tr.eyebrow} — ${tr.industries[industry]}`} loading="eager" fetchPriority="high" width={900} height={560} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity .4s ease" }} />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,.35))" }} />
+          <div className="ce-hero-visual relative h-[560px]">
+            <div className="absolute inset-0 rounded-3xl overflow-hidden shadow-[0_30px_80px_-30px_rgba(26,20,16,.35)]">
+              <Image
+                key={industry}
+                src={PHOTOS[industry]}
+                alt={`${tr.eyebrow} — ${tr.industries[industry]}`}
+                width={900}
+                height={560}
+                className="w-full h-full object-cover transition-opacity duration-400"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/35 to-black/35" />
             </div>
 
             {/* Live call card */}
-            <div style={{ position: "absolute", top: 24, left: 24, right: 24, background: "rgba(255,255,255,.96)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,.6)", borderRadius: 20, padding: 16, boxShadow: "0 20px 50px -20px rgba(26,20,16,.35)", display: "flex", alignItems: "center", gap: 14 }}>
+            <div className="absolute top-6 left-6 right-6 bg-white/95 backdrop-blur-md border border-white/60 rounded-2xl p-4 shadow-xl flex items-center gap-3.5">
               <div style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--ce-primary)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", animation: "ce-pulse-ring 2s infinite", flexShrink: 0 }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
               </div>
@@ -151,7 +160,7 @@ export default function HeroSection({ locale }: { locale: string }) {
             </div>
 
             {/* Confirmation card */}
-            <div style={{ position: "absolute", bottom: 28, right: 22, width: 268, background: "#fff", borderRadius: 18, padding: 16, boxShadow: "0 18px 45px -18px rgba(26,20,16,.4)" }}>
+            <div className="absolute bottom-7 right-5 w-[268px] bg-white rounded-2xl p-4 shadow-xl">
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                 <span style={{ width: 26, height: 26, borderRadius: "50%", background: "var(--ce-good-soft)", color: "var(--ce-good)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>

@@ -201,7 +201,9 @@ export default function DemoSection({ locale }: { locale: string }) {
           </div>
 
           {/* Right: transcript */}
-          <div ref={containerRef} style={{ maxHeight: 420, overflowY: "auto", padding: "4px 8px 4px 0", scrollbarWidth: "thin" }}>
+          <div>
+            <h3 className="sr-only">Live transcript</h3>
+            <div ref={containerRef} style={{ maxHeight: 420, overflowY: "auto", padding: "4px 8px 4px 0", scrollbarWidth: "thin" }}>
             {transcript.map((line, i) => {
               const isEmily = line.who === "emily"
               const isActive = i === activeIdx
@@ -222,6 +224,7 @@ export default function DemoSection({ locale }: { locale: string }) {
                 </div>
               )
             })}
+          </div>
           </div>
         </div>
       </div>

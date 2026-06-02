@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import Image from "next/image"
 
 interface PTBlock {
   _type: string
@@ -47,7 +48,7 @@ function renderBlock(block: PTBlock, idx: number): ReactNode {
     return (
       <figure key={block._key ?? idx} style={{ margin: "32px 0" }}>
         {block.asset?.url && (
-          <img src={block.asset.url} alt={block.alt ?? ""} style={{ width: "100%", borderRadius: 12 }} />
+          <Image src={block.asset.url} alt={block.alt ?? ""} width={800} height={450} className="w-full rounded-xl" />
         )}
         {block.caption && (
           <figcaption style={{ fontSize: 13, color: "var(--ce-muted)", textAlign: "center", marginTop: 8 }}>{block.caption}</figcaption>
