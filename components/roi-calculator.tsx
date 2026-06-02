@@ -101,9 +101,9 @@ export default function ROICalculator({ industry = "restaurant" }: { industry?: 
             <div style={{ position: "absolute", top: -100, right: -100, width: 360, height: 360, background: "radial-gradient(circle, rgba(232,93,44,.32) 0%, transparent 65%)", pointerEvents: "none" }} />
 
             <div style={{ position: "relative", zIndex: 1 }}>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,.5)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              <h3 style={{ fontSize: 12, color: "rgba(255,255,255,.5)", letterSpacing: "0.08em", textTransform: "uppercase", margin: 0, fontWeight: 500 }}>
                 {tr.lostRevenue.replace("{valueLabel}", preset.valueLabel)}
-              </div>
+              </h3>
               <div style={{ fontFamily: "var(--font-unbounded), sans-serif", fontWeight: 700, fontSize: "clamp(24px, 7.5vw, 68px)", color: "var(--ce-accent)", marginTop: 10, lineHeight: 1.1, wordBreak: "keep-all" }}>
                 {tr.currency}{fmtNum(result.lostRevenue)}
               </div>
@@ -111,8 +111,8 @@ export default function ROICalculator({ industry = "restaurant" }: { industry?: 
 
             <div style={{ background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.1)", borderRadius: 18, padding: 22, position: "relative", zIndex: 1 }}>
               <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
+                <h3 style={{ fontSize: 13.5, color: "rgba(255,255,255,.7)", margin: 0, fontWeight: 500 }}>{tr.recoveredLabel}</h3>
                 <span style={{ fontFamily: "var(--font-unbounded), sans-serif", fontWeight: 700, fontSize: "clamp(18px, 5vw, 26px)", color: "var(--ce-accent)", whiteSpace: "nowrap" }}>+{tr.currency}{fmtNum(result.recovered)}</span>
-                <span style={{ fontSize: 13.5, color: "rgba(255,255,255,.7)" }}>{tr.recoveredLabel}</span>
               </div>
               <div style={{ height: 8, background: "rgba(255,255,255,.08)", borderRadius: 4, overflow: "hidden" }}>
                 <div style={{ width: "85%", height: "100%", background: "linear-gradient(90deg, var(--ce-accent), #f5d76e)", borderRadius: 4 }} />

@@ -99,7 +99,7 @@ export default function HeroSection({ locale }: { locale: string }) {
               <span style={{ display: "block", fontSize: 13, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ce-primary)", marginBottom: 14, fontFamily: "var(--font-onest), sans-serif" }}>
                 {tr.eyebrow}
               </span>
-              {c.h1}{" "}
+              {' '}{c.h1}{' '}
               <span style={{ color: "var(--ce-primary)", backgroundImage: "linear-gradient(180deg, transparent 65%, var(--ce-accent-soft) 65%)", backgroundRepeat: "no-repeat" }}>{c.emph}</span>
               {c.tail ? " " + c.tail : ""}
             </h1>
