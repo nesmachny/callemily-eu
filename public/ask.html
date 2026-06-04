@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ask Emily • Voice Test</title>
+  <style>
+    :root {
+      --primary: #0A84FF;
+      --accent: #34C759;
+      --bg: #0f1115;
+      --card: #171a21;
+      --text: #f1f3f5;
+      --muted: #9aa0a6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 22px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      margin-top: 4px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    button {
+      font: inherit;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 9999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      font-size: 16px;
+    }
+    .btn-primary:hover { filter: brightness(1.1); }
+    .btn-danger {
+      background: #ff3b30;
+      color: white;
+    }
+    .btn-secondary {
+      background: #2c2f36;
+      color: var(--text);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .status {
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: #2c2f36;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #34C759;
+    }
+    .status.connecting .status-dot { background: #ff9500; animation: pulse 1.5s infinite; }
+    .status.speaking .status-dot { background: var(--accent); }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    #transcript {
+      background: #111317;
+      border-radius: 12px;
+      padding: 20px;
+      height: 420px;
+      overflow-y: auto;
+      font-size: 15px;
+      line-height: 1.6;
+      border: 1px solid #2c2f36;
+    }
+    .msg {
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+    }
+    .msg.user .bubble {
+      background: #1f2530;
+      margin-left: auto;
+    }
+    .msg.assistant .bubble {
+      background: #1a2330;
+    }
+    .bubble {
+      max-width: 78%;
+      padding: 12px 18px;
+      border-radius: 18px;
+      position: relative;
+    }
+    .label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .you { color: #7eb8ff; }
+    .emily { color: #5ee07a; }
+    .meta {
+      font-size: 12px;
+      color: #666;
+      margin-top: 20px;
+    }
+    .settings {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin: 12px 0 20px;
+      font-size: 14px;
+    }
+    select {
+      background: #2c2f36;
+      color: var(--text);
+      border: 1px solid #3a3f47;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font: inherit;
+    }
+    .hint {
+      font-size: 13px;
+      color: var(--muted);
+      background: #1a1d24;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: #555;
+      text-align: center;
+    }
+    .visualizer {
+      height: 6px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 999px;
+      margin: 12px 0;
+      transition: width .1s linear;
+      width: 0%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">E</div>
+      <div>
+        <h1>Ask Emily</h1>
+        <div class="subtitle">Browser voice test • Grok (xAI) Voice Agent</div>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="controls">
+        <button id="start" class="btn-primary">🎤 Start Voice Call</button>
+        <button id="stop" class="btn-danger" disabled>■ End Call</button>
+        <span id="status" class="status"><span class="status-dot"></span> <span>disconnected</span></span>
+      </div>
+
+      <div class="settings">
+        <label>Voice:
+          <select id="voice">
+            <option value="eve" selected>eve (warm, professional)</option>
+            <option value="ara">ara (soft, friendly)</option>
+            <option value="rex">rex (clear, confident)</option>
+            <option value="sal">sal (neutral)</option>
+            <option value="leo">leo (authoritative)</option>
+          </select>
+        </label>
+        <button id="barge" class="btn-secondary" disabled>Interrupt (barge-in)</button>
+      </div>
+
+      <div id="transcript"></div>
+      <div class="visualizer" id="viz"></div>
+
+      <div class="hint">
+        <strong>Tips:</strong> Speak naturally. The model uses server-side VAD and will interrupt when you start talking. 
+        This page connects directly to the same Grok Voice pipeline used for production phone calls (with the current Emily persona + RAG + tools).
+      </div>
+    </div>
+
+    <div class="meta">
+      Backend: <code>/api/xvoice-ws</code> (Grok Realtime proxy) • Prompts &amp; KB from current server config • English primary (PT supported)
+    </div>
+
+    <div class="footer">
+      CallEmily Voice Test — for internal testing only
+    </div>
+  </div>
+
+<script>
+const logEl = document.getElementById('transcript');
+const statusEl = document.getElementById('status');
+const startBtn = document.getElementById('start');
+const stopBtn  = document.getElementById('stop');
+const voiceSel = document.getElementById('voice');
+const viz = document.getElementById('viz');
+
+const SAMPLE_RATE = 24000;
+const WS_PATH = '/api/xvoice-ws';
+
+let ws = null;
+let audioCtx = null;
+let micStream = null;
+let micNode = null;
+let playTime = 0;
+let isSpeaking = false;
+
+function setStatus(text, cls = '') {
+  statusEl.innerHTML = `<span class="status-dot"></span> <span>${text}</span>`;
+  statusEl.className = 'status ' + cls;
+}
+
+function appendMessage(who, text) {
+  const div = document.createElement('div');
+  div.className = `msg ${who}`;
+  const label = who === 'user' ? 'You' : 'Emily';
+  const cls = who === 'user' ? 'you' : 'emily';
+  div.innerHTML = `
+    <div style="flex:1">
+      <div class="label ${cls}">${label}</div>
+      <div class="bubble">${escapeHtml(text)}</div>
+    </div>
+  `;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function escapeHtml(str) {
+  return str.replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+function logMeta(msg) {
+  const div = document.createElement('div');
+  div.style.cssText = 'font-size:11px;color:#555;margin:4px 0;';
+  div.textContent = msg;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function b64encode(uint8) {
+  let s = '';
+  for (let i = 0; i < uint8.length; i++) s += String.fromCharCode(uint8[i]);
+  return btoa(s);
+}
+function b64decode(b64) {
+  const bin = atob(b64);
+  const u8 = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return u8;
+}
+
+// PCM16 LE → Float32 [-1,1]
+function pcm16ToFloat32(u8) {
+  const view = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  const f = new Float32Array(u8.byteLength / 2);
+  for (let i = 0; i < f.length; i++) f[i] = view.getInt16(i * 2, true) / 32768;
+  return f;
+}
+// Float32 → PCM16 LE
+function float32ToPcm16(f32) {
+  const u8 = new Uint8Array(f32.length * 2);
+  const view = new DataView(u8.buffer);
+  for (let i = 0; i < f32.length; i++) {
+    let v = Math.max(-1, Math.min(1, f32[i]));
+    view.setInt16(i * 2, v < 0 ? v * 0x8000 : v * 0x7fff, true);
+  }
+  return u8;
+}
+
+function schedulePlayback(pcm16Bytes) {
+  if (!audioCtx) return;
+  const f32 = pcm16ToFloat32(pcm16Bytes);
+  const buf = audioCtx.createBuffer(1, f32.length, SAMPLE_RATE);
+  buf.getChannelData(0).set(f32);
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf;
+  src.connect(audioCtx.destination);
+  const now = audioCtx.currentTime;
+  if (playTime < now) playTime = now;
+  src.start(playTime);
+  playTime += buf.duration;
+
+  // simple visualizer for assistant speech
+  viz.style.width = '100%';
+  setTimeout(() => { if (viz) viz.style.width = '0%'; }, 120);
+}
+
+async function start() {
+  startBtn.disabled = true;
+  setStatus('requesting microphone…', 'connecting');
+
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        sampleRate: SAMPLE_RATE,
+        channelCount: 1,
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      }
+    });
+  } catch (e) {
+    setStatus('microphone permission denied');
+    logMeta('mic error: ' + e.message);
+    startBtn.disabled = false;
+    return;
+  }
+
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: SAMPLE_RATE });
+  await audioCtx.resume();
+  playTime = audioCtx.currentTime;
+
+  setStatus('connecting to Emily…', 'connecting');
+
+  const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsUrl = `${protocol}//${location.host}${WS_PATH}`;
+
+  ws = new WebSocket(wsUrl);
+  ws.binaryType = 'arraybuffer';
+
+  ws.onopen = () => {
+    logMeta('connected to xAI voice proxy');
+    setStatus('configuring session…', 'connecting');
+
+    // Send session update — the server proxy will enrich with full Emily prompt + tools
+    ws.send(JSON.stringify({
+      type: 'session.update',
+      session: {
+        voice: voiceSel.value,
+        turn_detection: { type: 'server_vad', threshold: 0.5, prefix_padding_ms: 250, silence_duration_ms: 450 },
+        input_audio_format: 'pcm16',
+        output_audio_format: 'pcm16',
+        // We can send a light instruction; server-side xvoice.js will merge the real Emily persona
+        instructions: "You are Emily, the CallEmily voice assistant. Be warm, concise and helpful for restaurant, clinic and dealership calls. Confirm details and use tools when needed."
+      }
+    }));
+
+    // Ask for an initial greeting
+    ws.send(JSON.stringify({
+      type: 'response.create',
+      response: {
+        modalities: ['audio', 'text'],
+        instructions: "Greet the caller briefly and naturally as the voice assistant for the business. Say you are Emily and ask how you can help."
+      }
+    }));
+
+    setupMic();
+    stopBtn.disabled = false;
+    setStatus('listening…');
+  };
+
+  ws.onmessage = (event) => {
+    let ev;
+    try {
+      if (typeof event.data === 'string') {
+        ev = JSON.parse(event.data);
+      } else {
+        // binary audio frames sometimes come this way in some setups — ignore raw binary here
+        return;
+      }
+    } catch (e) {
+      return;
+    }
+    handleEvent(ev);
+  };
+
+  ws.onclose = (e) => {
+    logMeta(`connection closed (code ${e.code})`);
+    cleanup();
+  };
+  ws.onerror = () => {
+    logMeta('connection error');
+    cleanup();
+  };
+}
+
+function setupMic() {
+  if (!micStream || !audioCtx || !ws) return;
+
+  const src = audioCtx.createMediaStreamSource(micStream);
+  // Using ScriptProcessor for maximum compatibility in a single-file demo.
+  // For production consider AudioWorklet.
+  micNode = audioCtx.createScriptProcessor(4096, 1, 1);
+  micNode.onaudioprocess = (e) => {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    const f32 = e.inputBuffer.getChannelData(0);
+    const pcm = float32ToPcm16(f32);
+    ws.send(JSON.stringify({
+      type: 'input_audio_buffer.append',
+      audio: b64encode(pcm)
+    }));
+  };
+  src.connect(micNode);
+  micNode.connect(audioCtx.destination); // keep the node alive
+}
+
+function handleEvent(ev) {
+  const t = ev.type || '';
+
+  if (t === 'response.output_audio.delta' || t === 'response.audio.delta') {
+    if (ev.delta) {
+      try {
+        const pcm = b64decode(ev.delta);
+        schedulePlayback(pcm);
+      } catch (e) {}
+    }
+    return;
+  }
+
+  if (t.includes('input_audio_transcription.completed') || t.includes('input_audio_transcription.delta')) {
+    const txt = ev.transcript || ev.delta || '';
+    if (txt && txt.trim()) appendMessage('user', txt.trim());
+    return;
+  }
+
+  if (t.includes('audio_transcript.delta') || t.includes('audio_transcript.done') || t.includes('output_text.delta')) {
+    const txt = ev.transcript || ev.delta || ev.text || '';
+    if (txt && txt.trim()) {
+      appendMessage('assistant', txt.trim());
+    }
+    return;
+  }
+
+  if (t === 'error') {
+    logMeta('ERROR: ' + JSON.stringify(ev));
+    return;
+  }
+
+  if (t === 'session.created' || t === 'session.updated' || t === 'response.created') {
+    return; // normal lifecycle
+  }
+
+  // log other interesting events at low verbosity
+  if (t.includes('response') || t.includes('input_audio')) {
+    // logMeta(t);
+  }
+}
+
+function cleanup() {
+  stopBtn.disabled = true;
+  startBtn.disabled = false;
+  setStatus('disconnected');
+  viz.style.width = '0%';
+
+  try { if (micNode) micNode.disconnect(); } catch {}
+  try { if (micStream) micStream.getTracks().forEach(t => t.stop()); } catch {}
+  try { if (audioCtx) audioCtx.close(); } catch {}
+
+  micNode = null;
+  micStream = null;
+  audioCtx = null;
+  ws = null;
+}
+
+function stop() {
+  if (ws) {
+    try { ws.close(1000, 'user ended call'); } catch {}
+  }
+  cleanup();
+}
+
+function setVisualizer(level) {
+  // very simple level indicator (can be improved)
+  const pct = Math.min(100, Math.max(0, level * 180));
+  viz.style.width = pct + '%';
+}
+
+// Optional: very rough mic level for viz (not critical)
+function attachMicLevel() {
+  // Could be expanded with analyser node if desired.
+}
+
+// Keyboard shortcut
+document.addEventListener('keydown', (e) => {
+  if (e.key === ' ' && !startBtn.disabled) {
+    e.preventDefault();
+    if (!stopBtn.disabled) stop();
+    else start();
+  }
+  if (e.key.toLowerCase() === 'i' && !stopBtn.disabled) {
+    // manual interrupt hint
+    if (ws && ws.readyState === 1) {
+      ws.send(JSON.stringify({ type: 'response.cancel' }));
+    }
+  }
+});
+
+startBtn.onclick = start;
+stopBtn.onclick = stop;
+
+document.getElementById('barge').onclick = () => {
+  if (ws && ws.readyState === 1) {
+    ws.send(JSON.stringify({ type: 'response.cancel' }));
+    logMeta('sent response.cancel (barge-in)');
+  }
+};
+
+// Auto-focus hint
+setTimeout(() => {
+  logMeta('Tip: press Space to toggle the call. The model supports natural barge-in.');
+}, 800);
+</script>
+</body>
+</html>

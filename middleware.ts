@@ -18,13 +18,21 @@ function detectLocale(acceptLanguage: string): string {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Pass through API routes and static files
+  // Pass through API routes, static files, and the voice test page
   if (
     pathname.startsWith("/api/") ||
     pathname.startsWith("/_next/") ||
     /\.\w{1,5}$/.test(pathname)
   ) {
     return NextResponse.next()
+  }
+
+  // Rewrite the voice test paths to the static HTML (self-contained Grok voice test UI for testing the AI voice assistant)
+  // This makes https://callemily.eu/ask , /en/ask , /pt/ask all serve the browser voice call tester
+  if (pathname === "/ask" || pathname === "/en/ask" || pathname === "/pt/ask") {
+    const url = request.nextUrl.clone()
+    url.pathname = "/ask.html"
+    return NextResponse.rewrite(url)
   }
 
   const hasLocale = LOCALES.some(

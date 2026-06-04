@@ -198,6 +198,9 @@ export default function DemoSection({ locale }: { locale: string }) {
             <p style={{ fontSize: 13, color: "rgba(255,255,255,.55)", lineHeight: 1.55, margin: 0 }}>
               {tr.disclaimer}
             </p>
+            <p style={{ fontSize: 13, marginTop: 12 }}>
+              <a href="/ask" style={{ color: "var(--ce-accent)", textDecoration: "underline" }}>→ Test the live voice call interface in browser (Grok xAI)</a>
+            </p>
           </div>
 
           {/* Right: transcript */}
