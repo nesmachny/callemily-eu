@@ -200,6 +200,29 @@
       transition: width .1s linear;
       width: 0%;
     }
+
+    /* Streaming / typing indicator for live assistant transcript */
+    .bubble.streaming {
+      position: relative;
+      padding-right: 28px;
+    }
+    .typing-indicator {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 13px;
+      opacity: 0.7;
+      vertical-align: middle;
+    }
+    .typing-indicator span {
+      animation: typing-blink 1.2s infinite;
+      display: inline-block;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing-blink {
+      0%, 80%, 100% { opacity: 0.2; }
+      40% { opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -234,6 +257,14 @@
 
       <div id="transcript"></div>
       <div class="visualizer" id="viz"></div>
+
+      <div style="margin:8px 0 16px; font-size:13px; color:#9aa0a6;">
+        Mic input level (browser only — if the bar moves when you speak, your mic is working):
+        <span style="display:inline-block; width:220px; height:10px; background:#222; vertical-align:middle; border:1px solid #333; border-radius:2px; overflow:hidden;">
+          <span id="mic-level" style="display:block; height:100%; width:0%; background:#34C759; transition: width 50ms;"></span>
+        </span>
+        <span id="mic-pct" style="margin-left:6px; font-family:monospace;">0%</span>
+      </div>
 
       <div class="hint">
         <strong>Tips:</strong> Speak naturally. The model uses server-side VAD and will interrupt when you start talking. 
@@ -281,12 +312,17 @@ function appendMessage(who, text) {
   div.innerHTML = `
     <div style="flex:1">
       <div class="label ${cls}">${label}</div>
-      <div class="bubble">${escapeHtml(text)}</div>
+      <div class="bubble"><span class="text">${escapeHtml(text)}</span></div>
     </div>
   `;
   logEl.appendChild(div);
   logEl.scrollTop = logEl.scrollHeight;
+  return div;
 }
+
+// Accumulator for the current streaming assistant response.
+// We update the last Emily bubble in place instead of creating a new one for every delta.
+let currentAssistantEl = null;
 
 function escapeHtml(str) {
   return str.replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
@@ -381,6 +417,16 @@ async function start() {
   ws = new WebSocket(wsUrl);
   ws.binaryType = 'arraybuffer';
 
+  ws.onerror = (e) => {
+    logMeta('WS error');
+    setStatus('WS error (check console for details)');
+  };
+  ws.onclose = (e) => {
+    logMeta('WS closed code=' + e.code + ' reason=' + (e.reason || ''));
+    setStatus('disconnected (code ' + e.code + ')');
+    cleanup();
+  };
+
   ws.onopen = () => {
     logMeta('connected to xAI voice proxy');
     setStatus('configuring session…', 'connecting');
@@ -394,7 +440,7 @@ async function start() {
         input_audio_format: 'pcm16',
         output_audio_format: 'pcm16',
         // We can send a light instruction; server-side xvoice.js will merge the real Emily persona
-        instructions: "You are Emily, the CallEmily voice assistant. Be warm, concise and helpful for restaurant, clinic and dealership calls. Confirm details and use tools when needed."
+        instructions: "You are Emily, the CallEmily voice assistant. Default language is European Portuguese (pt-PT). Be warm, concise and helpful for restaurant, clinic and dealership calls. Confirm details and use tools when needed."
       }
     }));
 
@@ -403,7 +449,7 @@ async function start() {
       type: 'response.create',
       response: {
         modalities: ['audio', 'text'],
-        instructions: "Greet the caller briefly and naturally as the voice assistant for the business. Say you are Emily and ask how you can help."
+        instructions: "Greet the caller briefly and naturally in European Portuguese as the voice assistant for the business. Say you are Emily and ask how you can help."
       }
     }));
 
@@ -455,6 +501,32 @@ function setupMic() {
   };
   src.connect(micNode);
   micNode.connect(audioCtx.destination); // keep the node alive
+
+  // Live mic level visualizer (client-side AnalyserNode) so you can see if the browser is capturing your voice
+  try {
+    let micSrc = audioCtx.createMediaStreamSource(micStream);
+    let analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 64;
+    micSrc.connect(analyser);
+    window.__micAnalyser = analyser;
+    window.__micUpdate = function() {
+      if (!window.__micAnalyser) return;
+      let data = new Uint8Array(window.__micAnalyser.frequencyBinCount);
+      window.__micAnalyser.getByteFrequencyData(data);
+      let sum = 0;
+      for (let i = 0; i < data.length; i++) sum += data[i];
+      let avg = sum / data.length;
+      let pct = Math.min(100, Math.max(0, Math.round(avg * 1.8)));
+      let bar = document.getElementById("mic-level");
+      let pctEl = document.getElementById("mic-pct");
+      if (bar) bar.style.width = pct + "%";
+      if (pctEl) pctEl.textContent = pct + "%";
+      requestAnimationFrame(window.__micUpdate);
+    };
+    window.__micUpdate();
+  } catch (e) {
+    console.warn("mic analyser setup failed", e);
+  }
 }
 
 function handleEvent(ev) {
@@ -472,15 +544,71 @@ function handleEvent(ev) {
 
   if (t.includes('input_audio_transcription.completed') || t.includes('input_audio_transcription.delta')) {
     const txt = ev.transcript || ev.delta || '';
-    if (txt && txt.trim()) appendMessage('user', txt.trim());
+    if (txt && txt.trim()) {
+      // New user turn — finalize any previous assistant streaming bubble
+      currentAssistantEl = null;
+      // User transcription is usually one-shot per utterance; create new bubble
+      appendMessage('user', txt.trim());
+    }
     return;
   }
 
-  if (t.includes('audio_transcript.delta') || t.includes('audio_transcript.done') || t.includes('output_text.delta')) {
+  // Assistant (Emily) transcript streaming — accumulate into the current bubble
+  const isAssistantDelta = t.includes('audio_transcript.delta') || t.includes('output_text.delta') || t.includes('output_audio_transcript.delta');
+  const isAssistantDone  = t.includes('audio_transcript.done')  || t.includes('output_text.done')  || t.includes('output_audio_transcript.done');
+
+  if (isAssistantDelta) {
     const txt = ev.transcript || ev.delta || ev.text || '';
     if (txt && txt.trim()) {
-      appendMessage('assistant', txt.trim());
+      if (currentAssistantEl) {
+        // Live update the current streaming bubble (only the .text part, keep indicator)
+        const bubble = currentAssistantEl.querySelector('.bubble');
+        const textSpan = bubble ? bubble.querySelector('.text') : null;
+        if (textSpan) {
+          const current = textSpan.textContent || '';
+          // Prefer longer / more complete text, or append smartly for incremental deltas
+          let nextText = txt.trim();
+          if (nextText.length > current.length && !current.includes(nextText)) {
+            textSpan.textContent = nextText;
+          } else if (!current.includes(nextText)) {
+            textSpan.textContent = (current + ' ' + nextText).replace(/\s+/g, ' ').trim();
+          }
+        }
+      } else {
+        // First delta for this assistant turn → create bubble + show typing indicator
+        currentAssistantEl = appendMessage('assistant', txt.trim());
+        const bubble = currentAssistantEl.querySelector('.bubble');
+        if (bubble) {
+          bubble.classList.add('streaming');
+          // Add subtle live typing indicator (three animated dots) next to the text
+          const indicator = document.createElement('span');
+          indicator.className = 'typing-indicator';
+          indicator.innerHTML = '<span>●</span><span>●</span><span>●</span>';
+          bubble.appendChild(indicator);
+        }
+      }
     }
+    return;
+  }
+
+  if (isAssistantDone) {
+    const txt = ev.transcript || ev.text || '';
+    if (currentAssistantEl) {
+      const bubble = currentAssistantEl.querySelector('.bubble');
+      const textSpan = bubble ? bubble.querySelector('.text') : null;
+      if (bubble) {
+        // Remove typing indicator
+        const ind = bubble.querySelector('.typing-indicator');
+        if (ind) ind.remove();
+        bubble.classList.remove('streaming');
+
+        // Set final text if provided
+        if (txt && txt.trim() && textSpan) {
+          textSpan.textContent = txt.trim();
+        }
+      }
+    }
+    currentAssistantEl = null; // turn complete
     return;
   }
 
@@ -490,7 +618,15 @@ function handleEvent(ev) {
   }
 
   if (t === 'session.created' || t === 'session.updated' || t === 'response.created') {
-    return; // normal lifecycle
+    // New response turn starting — if we had a pending assistant bubble from previous deltas, keep it, but prepare for new
+    // (we finalize on .done). Safe to leave currentAssistantEl; it will be overwritten on next delta.
+    return;
+  }
+
+  if (t === 'response.done' || t === 'response.output_item.done') {
+    // Finalize any streaming assistant message
+    currentAssistantEl = null;
+    return;
   }
 
   // log other interesting events at low verbosity
@@ -508,6 +644,8 @@ function cleanup() {
   try { if (micNode) micNode.disconnect(); } catch {}
   try { if (micStream) micStream.getTracks().forEach(t => t.stop()); } catch {}
   try { if (audioCtx) audioCtx.close(); } catch {}
+  window.__micAnalyser = null;
+  window.__micUpdate = null;
 
   micNode = null;
   micStream = null;
