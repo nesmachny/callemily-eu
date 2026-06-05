@@ -77,7 +77,7 @@ export default async function HomePage({
 
   return (
     <>
-      <Header />
+      <Header locale={locale} />
       <main>
         <HeroSection locale={locale} />
         {/* <TrustStrip locale={locale} /> */}

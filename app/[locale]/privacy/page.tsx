@@ -274,7 +274,7 @@ export default async function PrivacyPage({
 
   return (
     <div style={{ background: "var(--ce-bg)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <SiteHeader />
+      <SiteHeader locale={locale} />
       <main style={{ flex: 1 }}>
 
         {/* Page hero */}

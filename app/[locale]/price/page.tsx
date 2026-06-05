@@ -33,7 +33,12 @@ export async function generateMetadata({
   }
 }
 
-export default async function PricePage() {
-  const navItems = await getMenu("primary")
+export default async function PricePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const navItems = await getMenu("primary", locale)
   return <PricePageClient navItems={navItems} />
 }

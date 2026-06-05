@@ -6,7 +6,7 @@ export default async function BlogLayout({ children, params }: { children: React
   const { locale } = await params
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header />
+      <Header locale={locale} />
       <main style={{ flex: 1 }}>{children}</main>
       <Footer locale={locale} />
     </div>

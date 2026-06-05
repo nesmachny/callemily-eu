@@ -44,7 +44,7 @@ export default async function RoiCalcPage({
   const meta = t(locale).meta
   return (
     <>
-      <Header transparent={false} />
+      <Header transparent={false} locale={locale} />
       <main className="container mx-auto py-24 px-4 sm:py-28 md:py-32">
         <div className="flex flex-col items-center">
           <h1 className="mb-8 text-3xl font-bold text-[#333333] md:text-4xl font-montserrat text-center">

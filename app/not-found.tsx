@@ -19,7 +19,7 @@ export default async function NotFound() {
 
   return (
     <div style={{ background: "var(--ce-bg)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <SiteHeader />
+      <SiteHeader locale={locale} />
       <main style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "64px 24px", textAlign: "center" }}>
         <span style={{ fontFamily: "var(--font-unbounded), sans-serif", fontWeight: 700, fontSize: "clamp(80px, 15vw, 140px)", color: "var(--ce-primary)", lineHeight: 1, marginBottom: 24 }}>
           404

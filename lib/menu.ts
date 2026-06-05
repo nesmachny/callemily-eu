@@ -9,12 +9,13 @@ export interface MenuItem {
   parent_id: string | null
 }
 
-export async function getMenu(name: string): Promise<MenuItem[]> {
+export async function getMenu(name: string, locale?: string): Promise<MenuItem[]> {
   if (!EMDASH_URL) return []
   try {
-    const res = await fetch(`${EMDASH_URL}/_emdash/api/menus/${name}`, {
+    const query = locale ? `?locale=${encodeURIComponent(locale)}` : ""
+    const res = await fetch(`${EMDASH_URL}/_emdash/api/menus/${name}${query}`, {
       headers: { Authorization: `Bearer ${process.env.EMDASH_API_TOKEN ?? ""}` },
-      next: { revalidate: 60, tags: [`menu-${name}`] },
+      next: { revalidate: 60, tags: [`menu-${name}`, `menu-${name}-${locale ?? "default"}`] },
     })
     if (!res.ok) return []
     const json = await res.json()
